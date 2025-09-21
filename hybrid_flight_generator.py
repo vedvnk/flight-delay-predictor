@@ -84,20 +84,20 @@ class HybridFlightGenerator:
             
             flights_generated = 0
             
-            # Realistic flight patterns for ORD
+            # Realistic flight patterns for ORD - increased frequencies for better coverage
             flight_patterns = [
                 # Hub routes (very frequent)
-                {'origins': ['LAX', 'SFO', 'SEA', 'PDX'], 'frequency': 12, 'duration_range': (240, 300)},
-                {'origins': ['JFK', 'LGA', 'EWR', 'BOS'], 'frequency': 15, 'duration_range': (120, 180)},
-                {'origins': ['ATL', 'DFW', 'IAH', 'MIA'], 'frequency': 12, 'duration_range': (150, 210)},
+                {'origins': ['LAX', 'SFO', 'SEA', 'PDX'], 'frequency': 25, 'duration_range': (240, 300)},
+                {'origins': ['JFK', 'LGA', 'EWR', 'BOS'], 'frequency': 30, 'duration_range': (120, 180)},
+                {'origins': ['ATL', 'DFW', 'IAH', 'MIA'], 'frequency': 25, 'duration_range': (150, 210)},
                 
                 # Major routes (frequent)
-                {'origins': ['DEN', 'SLC', 'PHX', 'LAS'], 'frequency': 8, 'duration_range': (180, 240)},
-                {'origins': ['MSP', 'DTW', 'CLE', 'PIT'], 'frequency': 6, 'duration_range': (90, 150)},
+                {'origins': ['DEN', 'SLC', 'PHX', 'LAS'], 'frequency': 18, 'duration_range': (180, 240)},
+                {'origins': ['MSP', 'DTW', 'CLE', 'PIT'], 'frequency': 15, 'duration_range': (90, 150)},
                 
                 # Regional routes (moderate)
-                {'origins': ['IND', 'MKE', 'STL', 'CVG'], 'frequency': 4, 'duration_range': (60, 120)},
-                {'origins': ['RDU', 'BNA', 'AUS', 'HOU'], 'frequency': 3, 'duration_range': (120, 180)},
+                {'origins': ['IND', 'MKE', 'STL', 'CVG'], 'frequency': 12, 'duration_range': (60, 120)},
+                {'origins': ['RDU', 'BNA', 'AUS', 'HOU'], 'frequency': 10, 'duration_range': (120, 180)},
             ]
             
             # Generate flights for each pattern
@@ -167,8 +167,8 @@ class HybridFlightGenerator:
         elif departure_minute >= 60:
             departure_minute = 59
         
-        # Create departure time
-        base_date = now.date() + timedelta(days=random.randint(0, 2))
+        # Create departure time - extend range to cover more dates
+        base_date = now.date() + timedelta(days=random.randint(0, 30))
         departure_time = datetime.combine(
             base_date, 
             datetime.min.time().replace(hour=departure_hour, minute=departure_minute)
@@ -311,7 +311,7 @@ def main():
     real_flights = generator.get_real_flights()
     
     # Generate realistic flights
-    target_count = 150  # More flights for better coverage
+    target_count = 500  # Many more flights for better coverage across all dates
     generated_flights = generator.generate_realistic_flights(target_count)
     
     # Save to database
