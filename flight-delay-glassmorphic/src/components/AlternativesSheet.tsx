@@ -152,7 +152,7 @@ export function AlternativesSheet({
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-semibold text-white">
-                              {alternative.onTimePercentage}%
+                              {alternative.onTimePercentage}% chance of delay
                             </span>
                             <div className={cn(
                               'px-2 py-0.5 rounded-full text-xs border',

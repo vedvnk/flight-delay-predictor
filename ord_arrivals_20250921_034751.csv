@@ -1,0 +1,26 @@
+flight_number,airline,origin,scheduled_arrival,actual_arrival,status,gate,terminal,delay_minutes,scraped_at
+NK7124,Spirit Airlines,SAN,02:50,04:16,Delayed,Gate 19,Terminal 2,86,2025-09-21T03:47:51.410367
+DL8290,Delta Air Lines,DFW,03:04,03:46,Delayed,Gate 17,Terminal 3,42,2025-09-21T03:47:51.410277
+NK3929,Spirit Airlines,BOS,03:14,03:29,On Time,Gate 50,Terminal 5,15,2025-09-21T03:47:51.410317
+B61524,JetBlue Airways,AUS,03:31,05:19,Delayed,Gate 24,Terminal 1,108,2025-09-21T03:47:51.410410
+AS9900,Alaska Airlines,DEN,03:41,04:23,Delayed,Gate 21,Terminal 3,42,2025-09-21T03:47:51.410354
+UA5281,United Airlines,SAN,03:43,03:59,Delayed,Gate 22,Terminal 2,16,2025-09-21T03:47:51.410297
+DL4548,Delta Air Lines,BOS,03:51,03:50,Landed,Gate 31,Terminal 5,0,2025-09-21T03:47:51.410269
+G4930,Allegiant Air,ATL,03:58,05:33,Delayed,Gate 26,Terminal 1,95,2025-09-21T03:47:51.410284
+G45145,Allegiant Air,DFW,03:59,04:21,Delayed,Gate 39,Terminal 2,22,2025-09-21T03:47:51.410291
+F96810,Frontier Airlines,LAX,04:10,05:44,Delayed,Gate 37,Terminal 3,94,2025-09-21T03:47:51.410389
+DL5355,Delta Air Lines,PDX,04:23,05:03,Delayed,Gate 49,Terminal 2,40,2025-09-21T03:47:51.410373
+F97206,Frontier Airlines,PDX,04:32,04:45,On Time,Gate 41,Terminal 1,13,2025-09-21T03:47:51.410404
+DL9103,Delta Air Lines,JFK,04:33,05:23,Delayed,Gate 23,Terminal 2,50,2025-09-21T03:47:51.410303
+G48276,Allegiant Air,BOS,04:51,05:11,Delayed,Gate 24,Terminal 5,20,2025-09-21T03:47:51.410399
+DL1983,Delta Air Lines,JFK,05:08,05:49,Delayed,Gate 36,Terminal 2,41,2025-09-21T03:47:51.410383
+F96708,Frontier Airlines,PHX,05:09,06:01,Delayed,Gate 32,Terminal 3,52,2025-09-21T03:47:51.410347
+WN8749,Southwest Airlines,PDX,05:18,06:29,Delayed,Gate 25,Terminal 3,71,2025-09-21T03:47:51.410308
+G41179,Allegiant Air,LAS,05:25,05:48,Delayed,Gate 29,Terminal 5,23,2025-09-21T03:47:51.410362
+AS6898,Alaska Airlines,PDX,05:29,05:16,Landed,Gate 18,Terminal 1,0,2025-09-21T03:47:51.410415
+G41899,Allegiant Air,PDX,05:32,06:36,Delayed,Gate 17,Terminal 3,64,2025-09-21T03:47:51.410324
+G42917,Allegiant Air,ATL,06:03,06:46,Delayed,Gate 12,Terminal 5,43,2025-09-21T03:47:51.410340
+AS3031,Alaska Airlines,PHX,06:08,06:51,Delayed,Gate 29,Terminal 3,43,2025-09-21T03:47:51.410255
+G46655,Allegiant Air,SEA,06:23,06:35,On Time,Gate 19,Terminal 2,12,2025-09-21T03:47:51.410394
+B68573,JetBlue Airways,MIA,06:38,06:23,Landed,Gate 31,Terminal 3,0,2025-09-21T03:47:51.410332
+DL3857,Delta Air Lines,MIA,06:46,06:43,Landed,Gate 31,Terminal 1,0,2025-09-21T03:47:51.410378

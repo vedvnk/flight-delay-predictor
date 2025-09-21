@@ -118,7 +118,7 @@ export function CompareTray({ isOpen, alternatives, onRemove, onClear }: Compare
                           <div className="flex items-center space-x-1">
                             <TrendingUp className="w-3 h-3 text-white/50" />
                             <span className="text-sm font-semibold text-white">
-                              {alternative.onTimePercentage}%
+                              {alternative.onTimePercentage}% chance of delay
                             </span>
                           </div>
                         </div>

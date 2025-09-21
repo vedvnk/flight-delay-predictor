@@ -55,7 +55,7 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
             displayConfig.borderColor
           )}>
             <div className="w-1.5 h-1.5 rounded-full bg-current mr-2" />
-            {flight.delayRiskPercentage || displayConfig.label}
+{flight.delayRiskPercentage ? `${flight.delayRiskPercentage} chance of delay` : displayConfig.label}
           </div>
         </div>
 
