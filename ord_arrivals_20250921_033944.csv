@@ -1,0 +1,5 @@
+flight_number,airline,origin,scheduled_arrival,actual_arrival,status,scraped_at
+DAR24,DAR,ORD,Unknown,Unknown,Unknown,2025-09-21T03:39:44.261203
+SSI163,SSI,Unknown,Unknown,Unknown,Delayed,2025-09-21T03:39:44.261975
+OUY9,OUY,ORD,Unknown,Unknown,Boarding,2025-09-21T03:39:44.261996
+SON7,SON,Unknown,Unknown,Unknown,Unknown,2025-09-21T03:39:44.262020

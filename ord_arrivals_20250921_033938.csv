@@ -1,0 +1,26 @@
+flight_number,airline,origin,scheduled_arrival,actual_arrival,status,gate,terminal,delay_minutes,scraped_at
+B66602,JetBlue Airways,JFK,02:43,03:52,Delayed,Gate 28,Terminal 2,69,2025-09-21T03:39:38.975715
+B67367,JetBlue Airways,SEA,02:45,03:59,Delayed,Gate 21,Terminal 5,74,2025-09-21T03:39:38.975691
+AS3399,Alaska Airlines,AUS,02:51,04:24,Delayed,Gate 8,Terminal 2,93,2025-09-21T03:39:38.975608
+B6504,JetBlue Airways,DFW,02:55,04:40,Delayed,Gate 9,Terminal 1,105,2025-09-21T03:39:38.975649
+F92720,Frontier Airlines,SEA,03:02,04:49,Delayed,Gate 49,Terminal 3,107,2025-09-21T03:39:38.975679
+UA5476,United Airlines,SAN,03:03,03:48,Delayed,Gate 50,Terminal 3,45,2025-09-21T03:39:38.975703
+G4942,Allegiant Air,HOU,03:04,03:43,Delayed,Gate 47,Terminal 5,39,2025-09-21T03:39:38.975615
+AA5828,American Airlines,ATL,03:11,03:27,Delayed,Gate 27,Terminal 1,16,2025-09-21T03:39:38.975667
+DL1961,Delta Air Lines,SFO,03:11,03:48,Delayed,Gate 30,Terminal 5,37,2025-09-21T03:39:38.975655
+NK8766,Spirit Airlines,SEA,03:29,04:40,Delayed,Gate 9,Terminal 5,71,2025-09-21T03:39:38.975579
+AS8168,Alaska Airlines,HOU,03:31,04:06,Delayed,Gate 16,Terminal 3,35,2025-09-21T03:39:38.975697
+UA904,United Airlines,SAN,03:38,04:04,Delayed,Gate 44,Terminal 3,26,2025-09-21T03:39:38.975623
+AA587,American Airlines,SEA,03:43,05:25,Delayed,Gate 39,Terminal 1,102,2025-09-21T03:39:38.975593
+DL4172,Delta Air Lines,HOU,03:55,04:28,Delayed,Gate 38,Terminal 3,33,2025-09-21T03:39:38.975558
+AA9949,American Airlines,AUS,04:16,05:32,Delayed,Gate 33,Terminal 3,76,2025-09-21T03:39:38.975636
+F98945,Frontier Airlines,PDX,04:16,05:01,Delayed,Gate 33,Terminal 5,45,2025-09-21T03:39:38.975570
+UA833,United Airlines,LAS,04:29,06:07,Delayed,Gate 48,Terminal 3,98,2025-09-21T03:39:38.975586
+F92611,Frontier Airlines,MIA,04:32,05:31,Delayed,Gate 38,Terminal 2,59,2025-09-21T03:39:38.975600
+WN2713,Southwest Airlines,LAX,05:00,06:31,Delayed,Gate 6,Terminal 5,91,2025-09-21T03:39:38.975661
+G44568,Allegiant Air,SFO,05:05,06:57,Delayed,Gate 14,Terminal 2,112,2025-09-21T03:39:38.975642
+F95633,Frontier Airlines,BOS,06:19,06:18,Landed,Gate 17,Terminal 2,0,2025-09-21T03:39:38.975673
+F95251,Frontier Airlines,BOS,06:31,06:35,On Time,Gate 4,Terminal 1,4,2025-09-21T03:39:38.975685
+AS5011,Alaska Airlines,PDX,06:33,08:21,Delayed,Gate 22,Terminal 5,108,2025-09-21T03:39:38.975629
+AS348,Alaska Airlines,PDX,06:34,08:11,Delayed,Gate 20,Terminal 2,97,2025-09-21T03:39:38.975721
+AA7316,American Airlines,LAX,06:39,06:48,On Time,Gate 31,Terminal 1,9,2025-09-21T03:39:38.975709
