@@ -1,139 +1,249 @@
 # Flight Delay Predictor
 
-A modern Flask web application that predicts flight delays for Chicago O'Hare Airport arrivals based on historical airline and airport data.
+A full-stack application for predicting flight delays with real-time data and beautiful glassmorphic UI design.
 
-## Features
+![Flight Delay Predictor](https://img.shields.io/badge/Status-Active-green)
+![Python](https://img.shields.io/badge/Python-3.9+-blue)
+![Next.js](https://img.shields.io/badge/Next.js-15.0-black)
+![Flask](https://img.shields.io/badge/Flask-Latest-red)
 
-- 🛬 **Real-time Flight Selection**: Choose from a comprehensive list of incoming flights
-- 📊 **Delay Prediction**: Get detailed risk assessment with probability percentages
-- 📈 **Interactive Charts**: Visualize delay statistics by airline and origin airport
-- 🎨 **Modern UI**: Beautiful, responsive design with Bootstrap 5
-- 📱 **Mobile Friendly**: Optimized for all device sizes
+## 🚀 Features
 
-## Installation
+### Backend (Flask API)
+- **Real Flight Data**: 24+ flights from LAX to ORD with actual delay information
+- **Delay Prediction**: Advanced algorithms using airline and airport statistics
+- **RESTful API**: Clean endpoints for flight status and alternatives
+- **CORS Enabled**: Seamless frontend integration
+- **CSV Data Source**: Real flight data with schedules, delays, and probabilities
 
-1. **Clone or download the project files**
+### Frontend (Next.js)
+- **Modern UI**: Glassmorphic design with smooth animations
+- **Real-time Search**: Auto-loading flight data on page visit
+- **Responsive Design**: Works perfectly on desktop and mobile
+- **Flight Alternatives**: Compare alternative flights with delay probabilities
+- **React Query**: Efficient data fetching with caching
+- **TypeScript**: Full type safety with Zod validation
 
-2. **Install Python dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run the application**:
-   ```bash
-   python app.py
-   ```
-
-4. **Open your browser** and navigate to:
-   ```
-   http://localhost:5000
-   ```
-
-## Project Structure
+## 🏗️ Architecture
 
 ```
 flight-delay-predictor/
-├── app.py                 # Main Flask application
-├── requirements.txt       # Python dependencies
-├── README.md             # This file
-├── templates/
-│   └── index.html        # Main HTML template
-└── static/
-    ├── style.css         # Custom CSS styles
-    └── script.js         # JavaScript functionality
+├── app.py                 # Flask backend server
+├── flights_lax_ord.csv   # Real flight data
+├── requirements.txt      # Python dependencies
+└── frontend/             # Next.js application
+    ├── src/
+    │   ├── app/          # Next.js app router
+    │   ├── components/   # React components
+    │   ├── hooks/        # React Query hooks
+    │   └── lib/          # Utilities and API client
+    └── package.json      # Node.js dependencies
 ```
 
-## How It Works
+## 🚦 Quick Start
 
-### Delay Prediction Algorithm
-The application uses a weighted combination of two factors:
-- **Airline Factor (40% weight)**: Historical delay probability for each airline
-- **Origin Factor (60% weight)**: Historical delay probability for each origin airport
+### Prerequisites
+- Python 3.9+
+- Node.js 18+
+- npm or yarn
 
-### Risk Categories
-- 🟢 **Low Risk (≤30%)**: Minimal delay probability
-- 🟡 **Medium Risk (31-50%)**: Moderate delay probability  
-- 🔴 **High Risk (>50%)**: High delay probability
-
-### Data Sources
-- Flight data includes real airline codes and airport information
-- Delay probabilities are based on historical performance data
-- Covers major airlines and airports serving Chicago O'Hare
-
-## API Endpoints
-
-- `GET /` - Main application page
-- `GET /api/flights` - Get list of all available flights
-- `GET /api/predict/<flight_id>` - Get delay prediction for specific flight
-- `GET /api/charts/airline` - Get airline delay statistics chart
-- `GET /api/charts/origin` - Get origin airport delay statistics chart
-- `GET /api/charts/combined` - Get overall delay risk distribution chart
-
-## Technologies Used
-
-- **Backend**: Flask (Python web framework)
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-- **UI Framework**: Bootstrap 5
-- **Charts**: Matplotlib (converted to base64 images)
-- **Data Processing**: Pandas, NumPy
-- **Icons**: Font Awesome 6
-
-## Customization
-
-### Adding New Airlines
-Edit the `airline_delay_prob` dictionary in `app.py`:
-```python
-airline_delay_prob = {
-    'New Airline': 45,  # Add your airline here
-    # ... existing airlines
-}
-```
-
-### Adding New Airports
-Edit the `origin_delay_prob` dictionary in `app.py`:
-```python
-origin_delay_prob = {
-    'New Airport': 35,  # Add your airport here
-    # ... existing airports
-}
-```
-
-### Modifying Risk Thresholds
-Update the risk calculation logic in the `predict_flight_delay()` function:
-```python
-if combined_prob <= 30:      # Low risk threshold
-    risk = "LOW RISK"
-elif combined_prob <= 50:    # Medium risk threshold
-    risk = "MEDIUM RISK"
-else:
-    risk = "HIGH RISK"
-```
-
-## Development
-
-### Running in Debug Mode
+### 1. Clone the Repository
 ```bash
-export FLASK_ENV=development
-python app.py
+git clone https://github.com/Aadi077/flight-delay-predictor.git
+cd flight-delay-predictor
 ```
 
-### Adding New Features
-1. Add new routes in `app.py`
-2. Update the HTML template in `templates/index.html`
-3. Add JavaScript functionality in `static/script.js`
-4. Style new elements in `static/style.css`
+### 2. Start the Backend
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
 
-## Browser Compatibility
+# Start Flask server
+python3 app.py
+```
+Backend will be available at `http://localhost:8000`
 
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+### 3. Start the Frontend
+```bash
+# Navigate to frontend directory
+cd frontend
 
-## License
+# Install dependencies
+npm install
 
-This project is open source and available under the MIT License.
+# Start development server
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 npm run dev
+```
+Frontend will be available at `http://localhost:3000`
 
-## Contributing
+## 📊 API Endpoints
 
-Feel free to submit issues, feature requests, or pull requests to improve the application.
+### Flight Status
+```http
+GET /flights/status?from=LAX&to=ORD&date=2025-09-21
+```
+
+**Response:**
+```json
+{
+  "flights": [
+    {
+      "flightNumber": "AA1247",
+      "airline": "American Airlines",
+      "from": "LAX",
+      "to": "ORD",
+      "schedDep": "2025-09-21T06:00:00-07:00",
+      "estDep": "2025-09-21T06:15:00-07:00",
+      "status": "DELAYED",
+      "delayMinutes": 15,
+      "gate": "B12",
+      "onTimeProbability": 0.72
+    }
+  ],
+  "totalFlights": 24,
+  "lastUpdated": "2025-09-21T05:13:57.275242+00:00"
+}
+```
+
+### Flight Alternatives
+```http
+GET /flights/alternatives?flightNumber=AA1247
+```
+
+**Response:**
+```json
+{
+  "alternatives": [
+    {
+      "flightNumber": "UA342",
+      "airline": "United Airlines",
+      "schedDep": "2025-09-21T07:15:00-07:00",
+      "schedArr": "2025-09-21T12:45:00-05:00",
+      "seatsLeft": 45,
+      "onTimeProbability": 0.85
+    }
+  ],
+  "totalAlternatives": 5
+}
+```
+
+## 🎨 Screenshots
+
+### Main Dashboard
+- Clean search interface with LAX→ORD default
+- Real-time flight data loading
+- Glassmorphic design elements
+
+### Flight Results
+- 24 real flights with actual delay information
+- Color-coded status indicators
+- Delay predictions and gate information
+
+### Flight Alternatives
+- Alternative flight suggestions
+- On-time probability comparisons
+- Seat availability information
+
+## 🛠️ Technical Details
+
+### Backend Stack
+- **Flask**: Python web framework
+- **Pandas**: Data manipulation and analysis
+- **Flask-CORS**: Cross-origin resource sharing
+- **CSV Data**: Real flight information storage
+
+### Frontend Stack
+- **Next.js 15**: React framework with App Router
+- **TypeScript**: Type-safe development
+- **Tailwind CSS**: Utility-first styling
+- **React Query**: Data fetching and caching
+- **Zod**: Runtime type validation
+- **Framer Motion**: Smooth animations
+
+### Data Source
+The application uses real flight data from `flights_lax_ord.csv` containing:
+- 24 flights from LAX to ORD
+- Actual departure/arrival times
+- Delay information and status
+- Gate assignments and seat availability
+- On-time probability calculations
+
+## 🔧 Development
+
+### Backend Development
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run with debug mode
+python3 app.py
+```
+
+### Frontend Development
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+```
+
+## 🌐 Deployment
+
+### Backend Deployment
+- Deploy Flask app to Heroku, Railway, or similar
+- Update CORS settings for production domain
+- Configure environment variables
+
+### Frontend Deployment
+- Deploy to Vercel, Netlify, or similar
+- Set `NEXT_PUBLIC_API_BASE_URL` to production API URL
+- Configure build settings
+
+## 📈 Performance Features
+
+- **React Query Caching**: Efficient data fetching with 30-second stale time
+- **Automatic Retries**: Robust error handling with exponential backoff
+- **Optimistic Updates**: Smooth user experience
+- **Responsive Design**: Mobile-first approach
+- **Loading States**: Skeleton screens and loading indicators
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Real flight data for LAX→ORD route
+- Modern glassmorphic design inspiration
+- React Query for excellent data management
+- Next.js team for the amazing framework
+
+## 📞 Support
+
+If you have any questions or need help with the project, please:
+- Open an issue on GitHub
+- Check the documentation
+- Review the API endpoints
+
+---
+
+**Live Demo**: Visit the application at `http://localhost:3000` after following the setup instructions.
+
+**Backend API**: Explore the API at `http://localhost:8000` with endpoints documented above.
