@@ -91,23 +91,41 @@ def generate_comprehensive_ord_flights():
                 
                 for i in range(num_flights):
                     try:
-                        # Random timing throughout the day
-                        departure_hour = random.randint(5, 23)  # 5 AM to 11 PM
-                        departure_minute = random.randint(0, 59)
+                        # Spread flights throughout the day with realistic scheduling
+                        # Morning flights (5 AM - 11 AM)
+                        if i < num_flights // 3:
+                            departure_hour = random.randint(5, 11)
+                            departure_minute = random.choice([0, 15, 30, 45])  # Realistic departure times
+                        # Afternoon flights (11 AM - 5 PM)
+                        elif i < (num_flights * 2) // 3:
+                            departure_hour = random.randint(11, 17)
+                            departure_minute = random.choice([0, 15, 30, 45])
+                        # Evening flights (5 PM - 11 PM)
+                        else:
+                            departure_hour = random.randint(17, 23)
+                            departure_minute = random.choice([0, 15, 30, 45])
                         
-                        # Create departure time
-                        departure_time = now.replace(
-                            hour=departure_hour, 
-                            minute=departure_minute, 
-                            second=0, 
-                            microsecond=0
+                        # Add some random variation to avoid exact same times
+                        departure_minute += random.randint(-5, 5)
+                        if departure_minute < 0:
+                            departure_minute = 0
+                        elif departure_minute >= 60:
+                            departure_minute = 59
+                        
+                        # Add unique time offset based on flight index to ensure variety
+                        unique_offset_minutes = (i * 7) % 60  # Spread flights 7 minutes apart
+                        departure_minute = (departure_minute + unique_offset_minutes) % 60
+                        
+                        # Create departure time for today or tomorrow
+                        base_date = now.date() + timedelta(days=random.randint(0, 2))
+                        departure_time = datetime.combine(
+                            base_date, 
+                            datetime.min.time().replace(hour=departure_hour, minute=departure_minute)
                         )
                         
-                        # Add some random days (0-2 days ahead)
-                        departure_time += timedelta(days=random.randint(0, 2))
-                        
-                        # Calculate arrival time
-                        arrival_time = departure_time + timedelta(minutes=base_duration + random.randint(-30, 30))
+                        # Calculate arrival time with realistic duration variation
+                        duration_variation = random.randint(-30, 30)
+                        arrival_time = departure_time + timedelta(minutes=base_duration + duration_variation)
                         
                         # Random airline and aircraft
                         airline = random.choice(airlines)
