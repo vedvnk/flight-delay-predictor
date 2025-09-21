@@ -11,10 +11,13 @@ export const flightStatusSchema = z.object({
   schedArr: z.string().optional(),
   estArr: z.string().nullable().optional(),
   gate: z.string().nullable(),
-  status: z.enum(['ON_TIME', 'DELAYED', 'CANCELED']),
+  status: z.enum(['ON_TIME', 'DELAYED', 'CANCELED', 'LANDED', 'SCHEDULED', 'BOARDING']),
   delayMinutes: z.number().nullable(),
   seatsAvailable: z.number().optional(),
   onTimeProbability: z.number().min(0).max(1).optional(),
+  delayProbability: z.number().min(0).max(1).optional(),
+  delayRisk: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
+  delayRiskPercentage: z.string().optional(),
 });
 
 export const alternativeFlightSchema = z.object({
@@ -27,7 +30,7 @@ export const alternativeFlightSchema = z.object({
   seatsLeft: z.number(),
   onTimeProbability: z.number().min(0).max(1),
   gate: z.string().nullable().optional(),
-  status: z.enum(['ON_TIME', 'DELAYED', 'CANCELED']).optional(),
+  status: z.enum(['ON_TIME', 'DELAYED', 'CANCELED', 'LANDED', 'SCHEDULED', 'BOARDING']).optional(),
   delayMinutes: z.number().nullable().optional(),
 });
 

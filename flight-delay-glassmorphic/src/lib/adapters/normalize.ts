@@ -10,8 +10,12 @@ export interface NormalizedFlight {
   scheduledDeparture: Date;
   estimatedDeparture: Date | null;
   gate: string | null;
-  status: 'ON_TIME' | 'DELAYED' | 'CANCELED';
+  status: 'ON_TIME' | 'DELAYED' | 'CANCELED' | 'LANDED' | 'SCHEDULED' | 'BOARDING';
   delayMinutes: number | null;
+  // Delay risk information
+  delayRisk?: 'LOW' | 'MEDIUM' | 'HIGH';
+  delayRiskPercentage?: string;
+  delayProbability?: number;
   // Derived fields
   isDelayed: boolean;
   delayText: string;
@@ -59,7 +63,39 @@ export const STATUS_CONFIG = {
     textColor: 'text-rose-200',
     borderColor: 'border-rose-300/30',
   },
+  LANDED: {
+    label: 'LANDED',
+    color: 'emerald',
+    bgColor: 'bg-emerald-400/20',
+    textColor: 'text-emerald-200',
+    borderColor: 'border-emerald-300/30',
+  },
+  SCHEDULED: {
+    label: 'SCHEDULED',
+    color: 'blue',
+    bgColor: 'bg-blue-400/20',
+    textColor: 'text-blue-200',
+    borderColor: 'border-blue-300/30',
+  },
+  BOARDING: {
+    label: 'BOARDING',
+    color: 'purple',
+    bgColor: 'bg-purple-400/20',
+    textColor: 'text-purple-200',
+    borderColor: 'border-purple-300/30',
+  },
 } as const;
+
+// Helper function to get status config with fallback
+export function getStatusConfig(status: string) {
+  return STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] || {
+    label: status || 'UNKNOWN',
+    color: 'gray',
+    bgColor: 'bg-gray-400/20',
+    textColor: 'text-gray-200',
+    borderColor: 'border-gray-300/30',
+  };
+}
 
 // Normalize flight status from API to UI format
 export function normalizeFlight(flight: FlightStatus): NormalizedFlight {
@@ -81,6 +117,9 @@ export function normalizeFlight(flight: FlightStatus): NormalizedFlight {
     gate: flight.gate,
     status: flight.status,
     delayMinutes,
+    delayRisk: flight.delayRisk,
+    delayRiskPercentage: flight.delayRiskPercentage,
+    delayProbability: flight.delayProbability,
     isDelayed,
     delayText: getDelayText(delayMinutes),
     departureTimeText: format(scheduledDeparture, 'HH:mm'),

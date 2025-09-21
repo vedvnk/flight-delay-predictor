@@ -1,6 +1,7 @@
 // Flight status configuration and utilities
 
-export type FlightStatus = 'ON_TIME' | 'DELAYED' | 'CANCELED';
+export type FlightStatus = 'ON_TIME' | 'DELAYED' | 'CANCELED' | 'LANDED' | 'SCHEDULED' | 'BOARDING';
+export type DelayRisk = 'LOW' | 'MEDIUM' | 'HIGH';
 
 export interface StatusConfig {
   label: string;
@@ -40,11 +41,90 @@ export const STATUS_CONFIG: Record<FlightStatus, StatusConfig> = {
     icon: 'XCircle',
     description: 'Flight has been canceled',
   },
+  LANDED: {
+    label: 'LANDED',
+    color: 'emerald',
+    bgColor: 'bg-emerald-400/20',
+    textColor: 'text-emerald-200',
+    borderColor: 'border-emerald-300/30',
+    icon: 'CheckCircle',
+    description: 'Flight has landed',
+  },
+  SCHEDULED: {
+    label: 'SCHEDULED',
+    color: 'blue',
+    bgColor: 'bg-blue-400/20',
+    textColor: 'text-blue-200',
+    borderColor: 'border-blue-300/30',
+    icon: 'Clock',
+    description: 'Flight is scheduled',
+  },
+  BOARDING: {
+    label: 'BOARDING',
+    color: 'purple',
+    bgColor: 'bg-purple-400/20',
+    textColor: 'text-purple-200',
+    borderColor: 'border-purple-300/30',
+    icon: 'Users',
+    description: 'Flight is boarding',
+  },
+};
+
+// Delay risk configuration
+export const DELAY_RISK_CONFIG: Record<DelayRisk, StatusConfig> = {
+  LOW: {
+    label: 'LOW RISK',
+    color: 'emerald',
+    bgColor: 'bg-emerald-400/20',
+    textColor: 'text-emerald-200',
+    borderColor: 'border-emerald-300/30',
+    icon: 'CheckCircle',
+    description: 'Low chance of delay',
+  },
+  MEDIUM: {
+    label: 'MEDIUM RISK',
+    color: 'amber',
+    bgColor: 'bg-amber-400/20',
+    textColor: 'text-amber-200',
+    borderColor: 'border-amber-300/30',
+    icon: 'Clock',
+    description: 'Medium chance of delay',
+  },
+  HIGH: {
+    label: 'HIGH RISK',
+    color: 'rose',
+    bgColor: 'bg-rose-400/20',
+    textColor: 'text-rose-200',
+    borderColor: 'border-rose-300/30',
+    icon: 'AlertTriangle',
+    description: 'High chance of delay',
+  },
 };
 
 // Get status configuration
-export function getStatusConfig(status: FlightStatus): StatusConfig {
-  return STATUS_CONFIG[status];
+export function getStatusConfig(status: string): StatusConfig {
+  return STATUS_CONFIG[status as FlightStatus] || {
+    label: status || 'UNKNOWN',
+    color: 'gray',
+    bgColor: 'bg-gray-400/20',
+    textColor: 'text-gray-200',
+    borderColor: 'border-gray-300/30',
+    icon: 'HelpCircle',
+    description: 'Unknown status',
+  };
+}
+
+// Get delay risk configuration
+export function getDelayRiskConfig(risk: string): StatusConfig {
+  return DELAY_RISK_CONFIG[risk as DelayRisk] || {
+    label: 'UNKNOWN',
+    color: 'gray',
+    bgColor: 'bg-gray-400/20',
+    textColor: 'text-gray-200',
+    borderColor: 'border-gray-300/30',
+    icon: 'HelpCircle',
+    description: 'Unknown delay risk',
+  };
 }
 
 // Get status pill classes

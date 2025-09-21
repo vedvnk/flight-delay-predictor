@@ -326,6 +326,18 @@ def get_flight_status():
             # Convert to API format
             flights = []
             for flight in flights_db:
+                # Calculate delay risk category
+                delay_prob = flight.delay_probability or 0.3
+                if delay_prob < 0.2:
+                    delay_risk = "LOW"
+                    delay_risk_percentage = f"{int(delay_prob * 100)}%"
+                elif delay_prob < 0.4:
+                    delay_risk = "MEDIUM"
+                    delay_risk_percentage = f"{int(delay_prob * 100)}%"
+                else:
+                    delay_risk = "HIGH"
+                    delay_risk_percentage = f"{int(delay_prob * 100)}%"
+                
                 flight_data = {
                     "flightNumber": flight.flight_number,
                     "airline": flight.airline.name if flight.airline else "Unknown",
@@ -345,6 +357,8 @@ def get_flight_status():
                     "loadFactor": flight.load_factor,
                     "onTimeProbability": flight.on_time_probability or 0.5,
                     "delayProbability": flight.delay_probability,
+                    "delayRisk": delay_risk,
+                    "delayRiskPercentage": delay_risk_percentage,
                     "cancellationProbability": flight.cancellation_probability,
                     "basePrice": flight.base_price,
                     "currentPrice": flight.current_price,

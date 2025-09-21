@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Clock, MapPin, Plane, ArrowRight, AlertTriangle } from 'lucide-react';
 import { NormalizedFlight } from '@/lib/adapters/normalize';
-import { getStatusConfig } from '@/lib/status';
+import { getStatusConfig, getDelayRiskConfig } from '@/lib/status';
 import { cn } from '@/lib/utils';
 
 interface FlightCardProps {
@@ -13,7 +13,10 @@ interface FlightCardProps {
 }
 
 export function FlightCard({ flight, onViewAlternatives, className }: FlightCardProps) {
-  const statusConfig = getStatusConfig(flight.status);
+  // Use delay risk if available, otherwise fall back to status
+  const displayConfig = flight.delayRisk 
+    ? getDelayRiskConfig(flight.delayRisk)
+    : getStatusConfig(flight.status);
   
   return (
     <motion.div
@@ -44,15 +47,15 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
             </div>
           </div>
           
-          {/* Status pill */}
+          {/* Delay Risk pill */}
           <div className={cn(
             'inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border backdrop-blur-sm',
-            statusConfig.bgColor,
-            statusConfig.textColor,
-            statusConfig.borderColor
+            displayConfig.bgColor,
+            displayConfig.textColor,
+            displayConfig.borderColor
           )}>
             <div className="w-1.5 h-1.5 rounded-full bg-current mr-2" />
-            {statusConfig.label}
+            {flight.delayRiskPercentage || displayConfig.label}
           </div>
         </div>
 
