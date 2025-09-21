@@ -41,6 +41,92 @@ def init_database():
 # Initialize database
 db_initialized = init_database()
 
+# Delay probability by airline (historical data) - Updated for LAX-ORD route
+airline_delay_prob = {
+    'American Airlines': 35, 'United Airlines': 42, 'Delta Air Lines': 28, 
+    'Alaska Airlines': 31, 'Southwest Airlines': 38, 'JetBlue Airways': 33,
+    'Frontier Airlines': 46, 'Spirit Airlines': 52, 'Allegiant Air': 58,
+    'Sun Country Airlines': 45
+}
+
+# Delay probability by origin airport - LAX specific
+origin_delay_prob = {
+    'LAX': 47  # Los Angeles International Airport delay probability
+}
+
+# Database initialization completed
+
+def predict_flight_delay(flight_id):
+    """Enhanced delay prediction using CSV data"""
+    try:
+        flight = df[df['Ident'] == flight_id].iloc[0]
+        
+        # Use actual delay data if available, otherwise use probability model
+        if pd.notna(flight['delay_minutes']) and flight['delay_minutes'] > 0:
+            actual_delay = flight['delay_minutes']
+            if actual_delay <= 15:
+                risk = "LOW RISK"
+                risk_color = "success"
+                combined_prob = 25
+            elif actual_delay <= 60:
+                risk = "MEDIUM RISK"
+                risk_color = "warning"
+                combined_prob = 45
+            else:
+                risk = "HIGH RISK"
+                risk_color = "danger"
+                combined_prob = 75
+        else:
+            # Use probability model for prediction
+            airline_prob = flight['Airline_Delay_Prob']
+            origin_prob = flight['Origin_Delay_Prob']
+            
+            # Factor in on-time probability from CSV
+            if 'on_time_probability' in flight and pd.notna(flight['on_time_probability']):
+                on_time_prob = flight['on_time_probability']
+                combined_prob = ((airline_prob * 0.3) + (origin_prob * 0.3) + ((1 - on_time_prob) * 100 * 0.4))
+            else:
+                combined_prob = (airline_prob * 0.4) + (origin_prob * 0.6)
+
+            if combined_prob <= 30:
+                risk = "LOW RISK"
+                risk_color = "success"
+            elif combined_prob <= 50:
+                risk = "MEDIUM RISK"
+                risk_color = "warning"
+            else:
+                risk = "HIGH RISK"
+                risk_color = "danger"
+
+        return {
+            'flight_id': flight_id,
+            'airline': flight['Airline'],
+            'origin': flight['Origin_Clean'],
+            'destination': flight.get('destination', 'ORD'),
+            'scheduled_departure': flight['scheduled_departure'].strftime('%Y-%m-%d %H:%M:%S') if pd.notna(flight['scheduled_departure']) else None,
+            'scheduled_arrival': flight['scheduled_arrival'].strftime('%Y-%m-%d %H:%M:%S') if pd.notna(flight['scheduled_arrival']) else None,
+            'actual_delay': int(flight.get('delay_minutes', 0)) if pd.notna(flight.get('delay_minutes', 0)) else 0,
+            'status': flight.get('status', 'UNKNOWN'),
+            'gate': flight.get('gate', 'TBD'),
+            'combined_prob': round(combined_prob),
+            'airline_prob': int(flight['Airline_Delay_Prob']),
+            'origin_prob': int(flight['Origin_Delay_Prob']),
+            'risk': risk,
+            'risk_color': risk_color
+        }
+    except (IndexError, KeyError) as e:
+        raise IndexError(f"Flight {flight_id} not found or data incomplete")
+
+def plot_to_base64(fig):
+    """Convert matplotlib figure to base64 string"""
+    img_buffer = BytesIO()
+    fig.savefig(img_buffer, format='png', dpi=300, bbox_inches='tight')
+    img_buffer.seek(0)
+    img_str = base64.b64encode(img_buffer.getvalue()).decode()
+    img_buffer.close()
+    plt.close(fig)
+    return img_str
+
 @app.route('/')
 def index():
     """Main page - API status"""
@@ -48,7 +134,6 @@ def index():
         'status': 'running',
         'message': 'OnTime API',
         'version': '1.0.0',
-        'database_initialized': db_initialized,
         'endpoints': [
             '/api/flights',
             '/api/predict/<flight_id>',
@@ -59,49 +144,133 @@ def index():
 
 @app.route('/api/flights')
 def get_flights():
-    """Get list of all flights - Database powered"""
-    if not db_initialized:
-        return jsonify({'error': 'Database not initialized. Please run init_db.py first.'}), 500
-    
-    try:
-        with app.app_context():
-            flights = Flight.query.options(
-                db.joinedload(Flight.airline),
-                db.joinedload(Flight.aircraft),
-                db.joinedload(Flight.origin_airport),
-                db.joinedload(Flight.destination_airport)
-            ).all()
-            
-            flights_list = [flight.to_dict() for flight in flights]
-            return jsonify({'flights': flights_list})
-    except Exception as e:
-        return jsonify({'error': f'Failed to fetch flights: {str(e)}'}), 500
+    """Get list of all flights"""
+    if df.empty:
+        return jsonify({'error': 'No flight data available'}), 503
+        
+    flights = []
+    for _, row in df.iterrows():
+        flights.append({
+            'id': row['Ident'],
+            'display': f"{row['Ident']} - {row['Airline']} from {row['Origin_Clean']}",
+            'airline': row['Airline'],
+            'origin': row['Origin_Clean'],
+            'destination': row.get('destination', 'ORD'),
+            'scheduled_departure': row['scheduled_departure'].isoformat() if pd.notna(row['scheduled_departure']) else None,
+            'status': row.get('status', 'UNKNOWN')
+        })
+    return jsonify(flights)
 
 @app.route('/api/predict/<flight_id>')
 def predict_delay(flight_id):
-    """Get delay prediction for a specific flight - Database powered"""
-    if not db_initialized:
-        return jsonify({'error': 'Database not initialized. Please run init_db.py first.'}), 500
+    """Get delay prediction for a specific flight"""
+    if df.empty:
+        return jsonify({'error': 'No flight data available'}), 503
         
     try:
-        with app.app_context():
-            flight = Flight.query.filter_by(flight_number=flight_id).first()
-            if not flight:
-                return jsonify({'error': 'Flight not found'}), 404
-            
-            prediction = {
-                'flight_number': flight.flight_number,
-                'airline': flight.airline.name if flight.airline else 'Unknown',
-                'on_time_probability': flight.on_time_probability or 0.5,
-                'delay_probability': flight.delay_probability or 0.3,
-                'cancellation_probability': flight.cancellation_probability or 0.05,
-                'predicted_delay_minutes': flight.delay_minutes or 0,
-                'status': flight.status
-            }
-            return jsonify(prediction)
+        result = predict_flight_delay(flight_id)
+        return jsonify(result)
+    except IndexError:
+        return jsonify({'error': 'Flight not found'}), 404
     except Exception as e:
-        return jsonify({'error': f'Failed to predict delay: {str(e)}'}), 500
+        return jsonify({'error': f'Error predicting delay: {str(e)}'}), 500
 
+@app.route('/api/charts/airline')
+def get_airline_chart():
+    """Get airline delay statistics chart"""
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    airline_stats = df.groupby('Airline')['Airline_Delay_Prob'].first().sort_values()
+
+    colors = ['#28a745' if x <= 30 else '#ffc107' if x <= 50 else '#dc3545' for x in airline_stats.values]
+
+    bars = ax.bar(range(len(airline_stats)), airline_stats.values, color=colors)
+    ax.set_title('Delay Probability by Airline', fontsize=16, fontweight='bold')
+    ax.set_xlabel('Airline', fontsize=12)
+    ax.set_ylabel('Delay Probability (%)', fontsize=12)
+    ax.set_xticks(range(len(airline_stats)))
+    ax.set_xticklabels(airline_stats.index, rotation=45, ha='right')
+
+    # Add percentage labels
+    for bar in bars:
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2., height + 1,
+                f'{height:.0f}%', ha='center', va='bottom', fontweight='bold')
+
+    ax.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    
+    return jsonify({'chart': plot_to_base64(fig)})
+
+@app.route('/api/charts/origin')
+def get_origin_chart():
+    """Get origin airport delay statistics chart"""
+    fig, ax = plt.subplots(figsize=(12, 10))
+
+    origin_stats = df.groupby('Origin_Clean')['Origin_Delay_Prob'].first().sort_values()
+
+    # Truncate long airport names for display
+    display_names = []
+    for name in origin_stats.index:
+        if len(name) > 25:
+            display_names.append(name[:22] + "...")
+        else:
+            display_names.append(name)
+
+    colors = ['#28a745' if x <= 30 else '#ffc107' if x <= 50 else '#dc3545' for x in origin_stats.values]
+
+    bars = ax.barh(range(len(origin_stats)), origin_stats.values, color=colors)
+    ax.set_title('Delay Probability by Origin Airport', fontsize=14, fontweight='bold')
+    ax.set_xlabel('Delay Probability (%)', fontsize=12)
+    ax.set_ylabel('Origin Airport', fontsize=10)
+    ax.set_yticks(range(len(origin_stats)))
+    ax.set_yticklabels(display_names, fontsize=9)
+
+    # Add percentage labels
+    for i, bar in enumerate(bars):
+        width = bar.get_width()
+        ax.text(width + 1, bar.get_y() + bar.get_height()/2.,
+                f'{width:.0f}%', ha='left', va='center', fontweight='bold', fontsize=9)
+
+    ax.grid(axis='x', alpha=0.3)
+    ax.set_xlim(0, max(origin_stats.values) + 10)
+    plt.tight_layout()
+    
+    return jsonify({'chart': plot_to_base64(fig)})
+
+@app.route('/api/charts/combined')
+def get_combined_chart():
+    """Get overall delay probability distribution chart"""
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    # Calculate combined probability for each flight
+    df['Combined_Prob'] = (df['Airline_Delay_Prob'] * 0.4) + (df['Origin_Delay_Prob'] * 0.6)
+
+    # Create bins
+    bins = [0, 30, 50, 100]
+    labels = ['Low Risk\n(≤30%)', 'Medium Risk\n(31-50%)', 'High Risk\n(>50%)']
+    colors = ['#28a745', '#ffc107', '#dc3545']
+
+    counts = []
+    for i in range(len(bins)-1):
+        count = len(df[(df['Combined_Prob'] > bins[i]) & (df['Combined_Prob'] <= bins[i+1])])
+        counts.append(count)
+
+    bars = ax.bar(labels, counts, color=colors)
+    ax.set_title('Flight Delay Risk Distribution', fontsize=16, fontweight='bold')
+    ax.set_ylabel('Number of Flights', fontsize=12)
+
+    # Add count labels
+    for bar in bars:
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2., height + 0.1,
+                f'{int(height)}', ha='center', va='bottom', fontweight='bold', fontsize=14)
+
+    plt.tight_layout()
+    
+    return jsonify({'chart': plot_to_base64(fig)})
+
+# Next.js compatible endpoints
 @app.route('/flights/status')
 def get_flight_status():
     """Get flight status - Database-powered endpoint with comprehensive data"""
