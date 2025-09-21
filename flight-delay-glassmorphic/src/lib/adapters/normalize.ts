@@ -9,6 +9,8 @@ export interface NormalizedFlight {
   to: string;
   scheduledDeparture: Date;
   estimatedDeparture: Date | null;
+  scheduledArrival: Date | null;
+  estimatedArrival: Date | null;
   gate: string | null;
   status: 'ON_TIME' | 'DELAYED' | 'CANCELED' | 'LANDED' | 'SCHEDULED' | 'BOARDING';
   delayMinutes: number | null;
@@ -20,7 +22,9 @@ export interface NormalizedFlight {
   isDelayed: boolean;
   delayText: string;
   departureTimeText: string;
-  estimatedTimeText: string;
+  estimatedDepartureText: string;
+  arrivalTimeText: string;
+  estimatedArrivalText: string;
 }
 
 export interface NormalizedAlternative {
@@ -101,6 +105,8 @@ export function getStatusConfig(status: string) {
 export function normalizeFlight(flight: FlightStatus): NormalizedFlight {
   const scheduledDeparture = parseISO(flight.schedDep);
   const estimatedDeparture = flight.estDep ? parseISO(flight.estDep) : null;
+  const scheduledArrival = flight.schedArr ? parseISO(flight.schedArr) : null;
+  const estimatedArrival = flight.estArr ? parseISO(flight.estArr) : null;
   
   const delayMinutes = flight.delayMinutes || 
     (estimatedDeparture ? differenceInMinutes(estimatedDeparture, scheduledDeparture) : null);
@@ -114,6 +120,8 @@ export function normalizeFlight(flight: FlightStatus): NormalizedFlight {
     to: flight.to,
     scheduledDeparture,
     estimatedDeparture,
+    scheduledArrival,
+    estimatedArrival,
     gate: flight.gate,
     status: flight.status,
     delayMinutes,
@@ -123,7 +131,9 @@ export function normalizeFlight(flight: FlightStatus): NormalizedFlight {
     isDelayed,
     delayText: getDelayText(delayMinutes),
     departureTimeText: format(scheduledDeparture, 'HH:mm'),
-    estimatedTimeText: estimatedDeparture ? format(estimatedDeparture, 'HH:mm') : '',
+    estimatedDepartureText: estimatedDeparture ? format(estimatedDeparture, 'HH:mm') : '',
+    arrivalTimeText: scheduledArrival ? format(scheduledArrival, 'HH:mm') : '',
+    estimatedArrivalText: estimatedArrival ? format(estimatedArrival, 'HH:mm') : '',
   };
 }
 

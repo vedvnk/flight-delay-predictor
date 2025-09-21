@@ -66,7 +66,7 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
             <div className="flex items-center space-x-3">
               <div className="text-center">
                 <div className="text-2xl font-bold text-white tabular-nums">
-                  {flight.departureTimeText}
+                  {flight.estimatedDepartureText || flight.departureTimeText}
                 </div>
                 <div className="text-xs text-white/60 uppercase tracking-wide">
                   {flight.from}
@@ -77,7 +77,7 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
               
               <div className="text-center">
                 <div className="text-2xl font-bold text-white tabular-nums">
-                  {flight.estimatedTimeText || flight.departureTimeText}
+                  {flight.estimatedArrivalText || flight.arrivalTimeText}
                 </div>
                 <div className="text-xs text-white/60 uppercase tracking-wide">
                   {flight.to}

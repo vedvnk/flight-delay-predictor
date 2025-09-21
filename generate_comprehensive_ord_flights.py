@@ -147,14 +147,28 @@ def generate_comprehensive_ord_flights():
                             weights=list(status_weights.values())
                         )[0]
                         
-                        # Calculate delays
+                        # Calculate delays and actual times
                         delay_minutes = 0
+                        actual_departure = None
+                        actual_arrival = None
+                        
                         if status == 'DELAYED':
                             delay_minutes = random.randint(15, 120)
-                            arrival_time += timedelta(minutes=delay_minutes)
+                            actual_departure = departure_time + timedelta(minutes=delay_minutes)
+                            actual_arrival = arrival_time + timedelta(minutes=delay_minutes)
                         elif status == 'BOARDING':
                             delay_minutes = random.randint(-30, 10)
-                            arrival_time += timedelta(minutes=delay_minutes)
+                            actual_departure = departure_time + timedelta(minutes=delay_minutes)
+                            actual_arrival = arrival_time + timedelta(minutes=delay_minutes)
+                        elif status == 'ON_TIME':
+                            # Add small realistic variations for on-time flights
+                            departure_variation = random.randint(-5, 5)  # ±5 minutes
+                            actual_departure = departure_time + timedelta(minutes=departure_variation)
+                            actual_arrival = arrival_time + timedelta(minutes=departure_variation)
+                        elif status == 'SCHEDULED':
+                            # Future flights don't have actual times yet
+                            actual_departure = None
+                            actual_arrival = None
                         
                         # Create flight record
                         flight = Flight(
@@ -165,9 +179,9 @@ def generate_comprehensive_ord_flights():
                             destination_airport_id=ord_airport.id,
                             flight_date=departure_time.date(),
                             scheduled_departure=departure_time,
-                            actual_departure=departure_time if status in ['ON_TIME', 'BOARDING'] else None,
+                            actual_departure=actual_departure,
                             scheduled_arrival=arrival_time,
-                            actual_arrival=arrival_time if status in ['ON_TIME', 'DELAYED'] else None,
+                            actual_arrival=actual_arrival,
                             status=status,
                             gate=f"Gate {random.randint(10, 50)}",
                             terminal=f"Terminal {random.randint(1, 5)}",
