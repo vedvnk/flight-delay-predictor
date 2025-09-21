@@ -39,9 +39,13 @@ def scrape_and_save_flights():
     # Initialize scraper
     scraper = FlightScraper("KORD")
     
-    # Use demo data for better testing
-    print("🎯 Using demo data for comprehensive testing...")
-    df = scraper.scrape_flights(use_demo=True)
+    # Use real FlightRadar24 data
+    print("🎯 Scraping real flights from FlightRadar24...")
+    df = scraper.scrape_flights(use_demo=False)
+    
+    if df.empty:
+        print("⚠️  No real data available, falling back to demo data...")
+        df = scraper.scrape_flights(use_demo=True)
     
     print(f"📊 Scraped {len(df)} flights")
     
