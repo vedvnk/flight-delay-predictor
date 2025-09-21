@@ -24,7 +24,9 @@ export function useFlightStatus(
     queryFn: async () => {
       if (!searchParams) throw new Error('Search parameters required');
       
+      console.log('useFlightStatus: Making query with params:', searchParams);
       const response = await apiClient.getFlightStatus(searchParams);
+      console.log('useFlightStatus: Got response:', response);
       const normalizedFlights = normalizeFlights(response.flights);
       
       return {

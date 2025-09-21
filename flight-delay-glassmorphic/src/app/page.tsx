@@ -15,6 +15,7 @@ import { LastUpdated } from '@/components/LastUpdated';
 import { EmptyState } from '@/components/EmptyState';
 import { ErrorState } from '@/components/ErrorState';
 import { FlightCardSkeleton } from '@/components/Skeletons';
+import { DebugApiTest } from '@/components/DebugApiTest';
 
 // Hooks and utilities
 import { useFlightStatus } from '@/hooks/useFlightStatus';
@@ -71,6 +72,14 @@ function FlightDelayApp() {
     refetchInterval: autoRefresh ? 60000 : false, // 60 seconds
   });
 
+  // Debug logging
+  console.log('Page state:', {
+    searchParams,
+    isLoadingFlights,
+    flightError,
+    flightData,
+    hasFlights: flightData?.flights?.length
+  });
 
   const {
     data: alternativesData,
@@ -165,6 +174,9 @@ function FlightDelayApp() {
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
+          {/* Debug API Test */}
+          <DebugApiTest />
+          
           {/* Search form */}
           <SearchForm onSubmit={handleSearch} isLoading={isLoadingFlights} />
 
