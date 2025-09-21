@@ -5,24 +5,24 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Flight Delay Predictor',
+  title: 'OnTime',
   description: 'Real-time flight delay predictions with glassmorphic design',
   keywords: ['flight', 'delay', 'prediction', 'airline', 'travel'],
-  authors: [{ name: 'Flight Delay Predictor' }],
+  authors: [{ name: 'OnTime' }],
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'Flight Delay Predictor',
+    title: 'OnTime',
     description: 'Real-time flight delay predictions with glassmorphic design',
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Flight Delay Predictor',
+    title: 'OnTime',
     description: 'Real-time flight delay predictions with glassmorphic design',
   },
 };

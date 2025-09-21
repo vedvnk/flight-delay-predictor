@@ -139,7 +139,7 @@ function FlightDelayApp() {
                 <Plane className="w-6 h-6 text-blue-300" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white text-shadow">Flight Delay Predictor</h1>
+                <h1 className="text-xl font-bold text-white text-shadow">OnTime</h1>
                 <p className="text-sm text-white/70">Real-time delay predictions</p>
               </div>
             </div>

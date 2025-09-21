@@ -142,7 +142,7 @@ def index():
     """Main page - API status"""
     return jsonify({
         'status': 'running',
-        'message': 'Flight Delay Predictor API',
+        'message': 'OnTime API',
         'version': '1.0.0',
         'endpoints': [
             '/api/flights',

@@ -1,6 +1,6 @@
 {
-  "name": "Flight Delay Predictor",
-  "short_name": "FlightDelay",
+  "name": "OnTime",
+  "short_name": "OnTime",
   "description": "Real-time flight delay predictions with glassmorphic design",
   "start_url": "/",
   "display": "standalone",

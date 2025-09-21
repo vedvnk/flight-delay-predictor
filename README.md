@@ -1,8 +1,8 @@
-# Flight Delay Predictor
+# OnTime
 
 A full-stack application for predicting flight delays with real-time data and beautiful glassmorphic UI design.
 
-![Flight Delay Predictor](https://img.shields.io/badge/Status-Active-green)
+![OnTime](https://img.shields.io/badge/Status-Active-green)
 ![Python](https://img.shields.io/badge/Python-3.9+-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-15.0-black)
 ![Flask](https://img.shields.io/badge/Flask-Latest-red)
