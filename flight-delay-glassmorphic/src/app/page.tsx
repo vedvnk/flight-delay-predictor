@@ -139,8 +139,12 @@ function FlightDelayApp() {
                 <Plane className="w-6 h-6 text-blue-300" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white text-shadow">OnTime</h1>
-                <p className="text-sm text-white/70">Real-time delay predictions</p>
+                <h1 className="text-3xl font-black text-shimmer tracking-wider drop-shadow-2xl">
+                  OnTime
+                </h1>
+                <p className="text-sm font-medium bg-gradient-to-r from-white/80 to-blue-200/70 bg-clip-text text-transparent tracking-wide">
+                  Real-time delay predictions
+                </p>
               </div>
             </div>
             
@@ -179,19 +183,19 @@ function FlightDelayApp() {
               {/* Results header */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-white">
+                  <h2 className="text-3xl font-extrabold bg-gradient-to-r from-white via-blue-100 to-purple-200 bg-clip-text text-transparent tracking-tight leading-tight drop-shadow-lg">
                     Flight Results
                   </h2>
-                  <p className="text-white/70 mt-1">
+                  <p className="text-lg font-semibold bg-gradient-to-r from-blue-200/90 to-cyan-200/80 bg-clip-text text-transparent mt-2 tracking-wide">
                     {searchParams.from} → {searchParams.to} • {formatSearchDate(searchParams.date)}
                   </p>
                 </div>
                 
                 {flightData && (
-                  <div className="flex items-center space-x-4 text-sm text-white/70">
-                    <div className="flex items-center space-x-1">
-                      <Plane className="w-4 h-4" />
-                      <span>{flightData.flights.length} flights</span>
+                  <div className="flex items-center space-x-4 text-sm">
+                    <div className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 rounded-full backdrop-blur-sm">
+                      <Plane className="w-4 h-4 text-blue-300" />
+                      <span className="font-bold bg-gradient-to-r from-blue-200 to-cyan-200 bg-clip-text text-transparent">{flightData.flights.length} flights</span>
                     </div>
                   </div>
                 )}
@@ -263,10 +267,10 @@ function FlightDelayApp() {
                     <div className="absolute inset-0 w-16 h-16 mx-auto bg-blue-400/20 rounded-full animate-ping"></div>
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4 text-shadow gradient-text">
+                <h3 className="text-3xl font-black bg-gradient-to-r from-white via-blue-200 to-purple-300 bg-clip-text text-transparent mb-6 tracking-tight leading-tight drop-shadow-2xl">
                   Find Your Flight
                 </h3>
-                <p className="text-white/70 leading-relaxed text-shadow">
+                <p className="text-lg font-medium bg-gradient-to-r from-white/90 via-blue-100/80 to-cyan-100/70 bg-clip-text text-transparent leading-relaxed tracking-wide">
                   Search for flights and get real-time delay predictions. 
                   Compare alternatives and make informed travel decisions.
                 </p>

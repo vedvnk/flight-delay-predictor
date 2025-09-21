@@ -107,14 +107,14 @@ export function SearchForm({ onSubmit, isLoading = false, className }: SearchFor
           <div className="p-2 rounded-xl bg-blue-500/20 border border-blue-400/30">
             <Plane className="w-5 h-5 text-blue-300" />
           </div>
-          <h2 className="text-xl font-semibold text-white">Search Flights</h2>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-white via-blue-100 to-cyan-200 bg-clip-text text-transparent tracking-wide drop-shadow-lg">Search Flights</h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* From airport */}
             <div className="relative">
-              <label className="block text-sm font-medium text-white/80 mb-2">
+              <label className="block text-sm font-bold bg-gradient-to-r from-white/90 to-blue-200/80 bg-clip-text text-transparent mb-2 tracking-wide">
                 From
               </label>
               <div className="relative">
@@ -149,7 +149,7 @@ export function SearchForm({ onSubmit, isLoading = false, className }: SearchFor
 
             {/* To airport */}
             <div className="relative">
-              <label className="block text-sm font-medium text-white/80 mb-2">
+              <label className="block text-sm font-bold bg-gradient-to-r from-white/90 to-blue-200/80 bg-clip-text text-transparent mb-2 tracking-wide">
                 To
               </label>
               <div className="relative">
@@ -184,7 +184,7 @@ export function SearchForm({ onSubmit, isLoading = false, className }: SearchFor
 
             {/* Date */}
             <div>
-              <label className="block text-sm font-medium text-white/80 mb-2">
+              <label className="block text-sm font-bold bg-gradient-to-r from-white/90 to-blue-200/80 bg-clip-text text-transparent mb-2 tracking-wide">
                 Date
               </label>
               <div className="relative">
@@ -238,7 +238,7 @@ export function SearchForm({ onSubmit, isLoading = false, className }: SearchFor
           transition={{ duration: 0.5, delay: 0.1 }}
           className="bg-white/5 border border-white/10 rounded-xl p-4"
         >
-          <h3 className="text-sm font-medium text-white/80 mb-3">Recent Searches</h3>
+          <h3 className="text-sm font-bold bg-gradient-to-r from-white/90 to-purple-200/80 bg-clip-text text-transparent mb-3 tracking-wide">Recent Searches</h3>
           <div className="flex flex-wrap gap-2">
             {recentSearches.map((search, index) => (
               <motion.button
