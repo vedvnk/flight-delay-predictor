@@ -118,18 +118,6 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
           </div>
         </div>
 
-        {/* Action button */}
-        <div className="mt-6 pt-4 border-t border-white/10">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onViewAlternatives(flight.flightNumber)}
-            className="w-full glass-button rounded-xl px-4 py-2.5 text-sm font-medium text-white relative overflow-hidden group"
-          >
-            <span className="relative z-10">View Alternatives</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </motion.button>
-        </div>
       </div>
     </motion.div>
   );
