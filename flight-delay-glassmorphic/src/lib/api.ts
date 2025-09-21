@@ -67,7 +67,6 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    console.log('Making API request to:', url);
     
     try {
       const response = await fetch(url, {
@@ -78,19 +77,14 @@ class ApiClient {
         ...options,
       });
 
-      console.log('API response status:', response.status);
-
       if (!response.ok) {
         const errorText = await response.text();
-        console.error('API error response:', errorText);
         throw new Error(`API Error ${response.status}: ${errorText}`);
       }
 
       const data = await response.json();
-      console.log('API response data:', data);
       return data;
     } catch (error) {
-      console.error('API request failed:', error);
       if (error instanceof Error) {
         throw error;
       }
