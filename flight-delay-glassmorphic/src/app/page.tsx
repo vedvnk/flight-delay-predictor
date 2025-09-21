@@ -139,7 +139,7 @@ function FlightDelayApp() {
                 <Plane className="w-6 h-6 text-blue-300" />
               </div>
               <div>
-                <h1 className="text-3xl font-black text-shimmer tracking-wider drop-shadow-2xl">
+                <h1 className="text-3xl font-black text-white tracking-wider drop-shadow-2xl">
                   OnTime
                 </h1>
                 <p className="text-sm font-medium bg-gradient-to-r from-white/80 to-blue-200/70 bg-clip-text text-transparent tracking-wide">
