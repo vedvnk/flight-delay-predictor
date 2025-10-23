@@ -124,6 +124,7 @@ class Flight(db.Model):
     terminal = db.Column(db.String(10), nullable=True)
     status = db.Column(db.String(20), nullable=False, index=True)  # ON_TIME, DELAYED, CANCELLED, BOARDING, etc.
     delay_minutes = db.Column(db.Integer, default=0)
+    delay_percentage = db.Column(db.Float, nullable=True)  # NEW: Percentage delay relative to scheduled duration
     cancellation_reason = db.Column(db.String(255), nullable=True)
     
     # Passenger and capacity info
@@ -146,6 +147,31 @@ class Flight(db.Model):
     duration_minutes = db.Column(db.Integer, nullable=True)
     distance_miles = db.Column(db.Integer, nullable=True)
     route_frequency = db.Column(db.String(20), nullable=True)  # DAILY, WEEKLY, etc.
+    
+    # NEW: Comprehensive delay prediction metrics
+    air_traffic_delay_minutes = db.Column(db.Integer, default=0)  # Air traffic congestion delay
+    weather_delay_minutes = db.Column(db.Integer, default=0)  # Weather-related delay
+    security_delay_minutes = db.Column(db.Integer, default=0)  # Security screening delay
+    mechanical_delay_minutes = db.Column(db.Integer, default=0)  # Aircraft mechanical delay
+    crew_delay_minutes = db.Column(db.Integer, default=0)  # Crew-related delay
+    
+    # NEW: Historical performance metrics
+    route_on_time_percentage = db.Column(db.Float, nullable=True)  # Historical on-time % for this route
+    airline_on_time_percentage = db.Column(db.Float, nullable=True)  # Historical on-time % for this airline
+    time_of_day_delay_factor = db.Column(db.Float, nullable=True)  # Delay factor based on departure time
+    day_of_week_delay_factor = db.Column(db.Float, nullable=True)  # Delay factor based on day of week
+    seasonal_delay_factor = db.Column(db.Float, nullable=True)  # Seasonal delay patterns
+    
+    # NEW: Real-time conditions
+    current_weather_delay_risk = db.Column(db.Float, nullable=True)  # Current weather delay risk (0-1)
+    current_air_traffic_delay_risk = db.Column(db.Float, nullable=True)  # Current air traffic delay risk (0-1)
+    current_airport_congestion_level = db.Column(db.Float, nullable=True)  # Current airport congestion (0-1)
+    
+    # NEW: Primary delay reason analysis
+    primary_delay_reason = db.Column(db.String(50), nullable=True)  # WEATHER, AIR_TRAFFIC, SECURITY, MECHANICAL, CREW, OPERATIONAL
+    primary_delay_reason_percentage = db.Column(db.Float, nullable=True)  # Percentage contribution of primary reason
+    secondary_delay_reason = db.Column(db.String(50), nullable=True)  # Secondary delay reason
+    delay_reason_confidence = db.Column(db.Float, nullable=True)  # Confidence in delay reason analysis (0-1)
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -174,6 +200,7 @@ class Flight(db.Model):
             'terminal': self.terminal,
             'status': self.status,
             'delay_minutes': self.delay_minutes,
+            'delay_percentage': self.delay_percentage,
             'cancellation_reason': self.cancellation_reason,
             'seats_available': self.seats_available,
             'total_seats': self.total_seats,
@@ -187,7 +214,28 @@ class Flight(db.Model):
             'flight_date': self.flight_date.isoformat() if self.flight_date else None,
             'duration_minutes': self.duration_minutes,
             'distance_miles': self.distance_miles,
-            'route_frequency': self.route_frequency
+            'route_frequency': self.route_frequency,
+            # NEW: Comprehensive delay metrics
+            'air_traffic_delay_minutes': self.air_traffic_delay_minutes,
+            'weather_delay_minutes': self.weather_delay_minutes,
+            'security_delay_minutes': self.security_delay_minutes,
+            'mechanical_delay_minutes': self.mechanical_delay_minutes,
+            'crew_delay_minutes': self.crew_delay_minutes,
+            # Historical performance metrics
+            'route_on_time_percentage': self.route_on_time_percentage,
+            'airline_on_time_percentage': self.airline_on_time_percentage,
+            'time_of_day_delay_factor': self.time_of_day_delay_factor,
+            'day_of_week_delay_factor': self.day_of_week_delay_factor,
+            'seasonal_delay_factor': self.seasonal_delay_factor,
+            # Real-time conditions
+            'current_weather_delay_risk': self.current_weather_delay_risk,
+            'current_air_traffic_delay_risk': self.current_air_traffic_delay_risk,
+            'current_airport_congestion_level': self.current_airport_congestion_level,
+            # Primary delay reason analysis
+            'primary_delay_reason': self.primary_delay_reason,
+            'primary_delay_reason_percentage': self.primary_delay_reason_percentage,
+            'secondary_delay_reason': self.secondary_delay_reason,
+            'delay_reason_confidence': self.delay_reason_confidence
         }
 
 class FlightStatus(db.Model):

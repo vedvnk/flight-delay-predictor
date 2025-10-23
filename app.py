@@ -80,7 +80,7 @@ def index():
             '/api/predict/ml/<flight_id>',
             '/api/models/performance',
             '/flights/status',
-            '/flights/alternatives'
+            '/flights/delay-analysis'
         ]
     })
 
@@ -352,6 +352,7 @@ def get_flight_status():
                     "terminal": flight.terminal or "TBD",
                     "status": flight.status,
                     "delayMinutes": flight.delay_minutes if flight.delay_minutes and flight.delay_minutes > 0 else None,
+                    "delayPercentage": flight.delay_percentage,
                     "seatsAvailable": flight.seats_available or 0,
                     "totalSeats": flight.total_seats,
                     "loadFactor": flight.load_factor,
@@ -364,7 +365,28 @@ def get_flight_status():
                     "currentPrice": flight.current_price,
                     "currency": flight.currency,
                     "durationMinutes": flight.duration_minutes,
-                    "distanceMiles": flight.distance_miles
+                    "distanceMiles": flight.distance_miles,
+                    # NEW: Comprehensive delay metrics
+                    "airTrafficDelayMinutes": flight.air_traffic_delay_minutes,
+                    "weatherDelayMinutes": flight.weather_delay_minutes,
+                    "securityDelayMinutes": flight.security_delay_minutes,
+                    "mechanicalDelayMinutes": flight.mechanical_delay_minutes,
+                    "crewDelayMinutes": flight.crew_delay_minutes,
+                    # NEW: Delay reason analysis
+                    "primaryDelayReason": flight.primary_delay_reason,
+                    "primaryDelayReasonPercentage": flight.primary_delay_reason_percentage,
+                    "secondaryDelayReason": flight.secondary_delay_reason,
+                    "delayReasonConfidence": flight.delay_reason_confidence,
+                    # NEW: Historical performance
+                    "routeOnTimePercentage": flight.route_on_time_percentage,
+                    "airlineOnTimePercentage": flight.airline_on_time_percentage,
+                    "timeOfDayDelayFactor": flight.time_of_day_delay_factor,
+                    "dayOfWeekDelayFactor": flight.day_of_week_delay_factor,
+                    "seasonalDelayFactor": flight.seasonal_delay_factor,
+                    # NEW: Real-time conditions
+                    "currentWeatherDelayRisk": flight.current_weather_delay_risk,
+                    "currentAirTrafficDelayRisk": flight.current_air_traffic_delay_risk,
+                    "currentAirportCongestionLevel": flight.current_airport_congestion_level
                 }
                 flights.append(flight_data)
             
@@ -381,76 +403,95 @@ def get_flight_status():
     except Exception as e:
         return jsonify({'error': f'Failed to fetch flights: {str(e)}'}), 500
 
-@app.route('/flights/alternatives')
-def get_flight_alternatives():
-    """Get flight alternatives - Database-powered endpoint"""
-    flight_number = request.args.get('flightNumber', '')
+@app.route('/flights/delay-analysis')
+def get_delay_analysis():
+    """Get comprehensive delay analysis for flights"""
+    from_airport = request.args.get('from', '').upper()
+    to_airport = request.args.get('to', '').upper()
     
-    if not flight_number:
-        return jsonify({'error': 'Missing required parameter: flightNumber'}), 400
+    if not from_airport or not to_airport:
+        return jsonify({'error': 'Missing required parameters: from, to'}), 400
     
     if not db_initialized:
         return jsonify({'error': 'Database not initialized. Please run init_db.py first.'}), 500
     
     try:
         with app.app_context():
-            # Get original flight info
-            original_flight = Flight.query.filter_by(flight_number=flight_number).first()
-            if not original_flight:
-                return jsonify({'alternatives': []})
+            # Get origin and destination airports
+            origin_airport = Airport.query.filter_by(iata_code=from_airport).first()
+            destination_airport = Airport.query.filter_by(iata_code=to_airport).first()
             
-            # Find alternative flights on the same route and date
-            time_window_start = original_flight.scheduled_departure - timedelta(hours=3)
-            time_window_end = original_flight.scheduled_departure + timedelta(hours=6)
+            if not origin_airport or not destination_airport:
+                return jsonify({'error': f'Airport not found: {from_airport} or {to_airport}'}), 404
             
-            alternatives = Flight.query.filter(
+            # Get flights for analysis
+            flights = Flight.query.filter(
                 and_(
-                    Flight.flight_number != flight_number,  # Exclude original flight
-                    Flight.origin_airport_id == original_flight.origin_airport_id,
-                    Flight.destination_airport_id == original_flight.destination_airport_id,
-                    Flight.flight_date == original_flight.flight_date,
-                    Flight.scheduled_departure >= time_window_start,
-                    Flight.scheduled_departure <= time_window_end
+                    Flight.origin_airport_id == origin_airport.id,
+                    Flight.destination_airport_id == destination_airport.id,
+                    Flight.primary_delay_reason.isnot(None)
                 )
             ).options(
                 db.joinedload(Flight.airline),
                 db.joinedload(Flight.aircraft)
-            ).order_by(desc(Flight.on_time_probability)).limit(5).all()
+            ).all()
             
-            # Convert to API format
-            alternatives_list = []
-            for alt in alternatives:
-                alternative = {
-                    "flightNumber": alt.flight_number,
-                    "airline": alt.airline.name if alt.airline else "Unknown",
-                    "aircraftType": alt.aircraft.type_code if alt.aircraft else "Unknown",
-                    "schedDep": alt.scheduled_departure.isoformat() if alt.scheduled_departure else None,
-                    "schedArr": alt.scheduled_arrival.isoformat() if alt.scheduled_arrival else None,
-                    "from": original_flight.origin_airport.iata_code if original_flight.origin_airport else "Unknown",
-                    "to": original_flight.destination_airport.iata_code if original_flight.destination_airport else "Unknown",
-                    "seatsLeft": alt.seats_available or 0,
-                    "totalSeats": alt.total_seats,
-                    "onTimeProbability": alt.on_time_probability or 0.5,
-                    "delayProbability": alt.delay_probability,
-                    "gate": alt.gate or "TBD",
-                    "terminal": alt.terminal or "TBD",
-                    "status": alt.status,
-                    "delayMinutes": alt.delay_minutes if alt.delay_minutes and alt.delay_minutes > 0 else None,
-                    "durationMinutes": alt.duration_minutes,
-                    "basePrice": alt.base_price,
-                    "currentPrice": alt.current_price,
-                    "currency": alt.currency
-                }
-                alternatives_list.append(alternative)
+            if not flights:
+                return jsonify({
+                    'delay_analysis': {
+                        'total_flights': 0,
+                        'delayed_flights': 0,
+                        'delay_percentage': 0,
+                        'primary_reasons': {},
+                        'average_delay_minutes': 0,
+                        'confidence_score': 0
+                    }
+                })
+            
+            # Analyze delay patterns
+            delay_reasons = {}
+            total_delays = 0
+            total_delay_minutes = 0
+            confidence_scores = []
+            
+            for flight in flights:
+                if flight.delay_minutes and flight.delay_minutes > 0:
+                    total_delays += 1
+                    total_delay_minutes += flight.delay_minutes
+                    
+                    reason = flight.primary_delay_reason
+                    if reason:
+                        delay_reasons[reason] = delay_reasons.get(reason, 0) + 1
+                    
+                    if flight.delay_reason_confidence:
+                        confidence_scores.append(flight.delay_reason_confidence)
+            
+            # Calculate statistics
+            total_flights = len(flights)
+            delay_percentage = (total_delays / total_flights) * 100 if total_flights > 0 else 0
+            average_delay_minutes = total_delay_minutes / total_delays if total_delays > 0 else 0
+            average_confidence = sum(confidence_scores) / len(confidence_scores) if confidence_scores else 0
+            
+            # Convert counts to percentages
+            reason_percentages = {}
+            for reason, count in delay_reasons.items():
+                reason_percentages[reason] = (count / total_delays) * 100 if total_delays > 0 else 0
             
             return jsonify({
-                "alternatives": alternatives_list,
-                "originalFlight": flight_number,
-                "totalAlternatives": len(alternatives_list)
+                'delay_analysis': {
+                    'total_flights': total_flights,
+                    'delayed_flights': total_delays,
+                    'delay_percentage': round(delay_percentage, 1),
+                    'primary_reasons': reason_percentages,
+                    'average_delay_minutes': round(average_delay_minutes, 1),
+                    'confidence_score': round(average_confidence, 2),
+                    'route': f"{from_airport} → {to_airport}",
+                    'last_updated': datetime.now(timezone.utc).isoformat()
+                }
             })
         
     except Exception as e:
-        return jsonify({'error': f'Error finding alternatives: {str(e)}'}), 500
+        return jsonify({'error': f'Error analyzing delays: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)

@@ -1,0 +1,14 @@
+# Real Data Integration API Keys
+# Copy this file to .env and add your actual API keys
+
+# Weather Data APIs
+OPENWEATHER_API_KEY=your_openweather_api_key_here
+
+# Flight Data APIs
+FLIGHTAWARE_API_KEY=your_flightaware_api_key_here
+FLIGHTAWARE_USERNAME=your_flightaware_username_here
+AVIATIONSTACK_API_KEY=your_aviationstack_api_key_here
+
+# Optional: Additional APIs for enhanced models
+# AIRLABS_API_KEY=your_airlabs_api_key_here
+# AVIATION_API_KEY=your_aviation_api_key_here
