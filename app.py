@@ -329,20 +329,47 @@ def get_flight_status():
             
             # Convert to API format
             flights = []
+            import random
+            weather_conditions = ['clear', 'cloudy', 'rain', 'storm', 'fog']
             for flight in flights_db:
-                # Calculate delay risk category
-                delay_prob = flight.delay_probability or 0.3
-                if delay_prob < 0.2:
-                    delay_risk = "LOW"
-                    delay_risk_percentage = f"{int(delay_prob * 100)}%"
-                elif delay_prob < 0.4:
-                    delay_risk = "MEDIUM"
-                    delay_risk_percentage = f"{int(delay_prob * 100)}%"
-                else:
-                    delay_risk = "HIGH"
-                    delay_risk_percentage = f"{int(delay_prob * 100)}%"
-                
+                # Simulate weather and NAS features
+                flight_weather = random.choice(weather_conditions)
+                flight_nas_congestion = round(random.uniform(0.3, 0.95), 2)
+                airport_congestion = round(random.uniform(0.3, 0.98), 2)
+                # TODO: Use real weather/NAS/congestion API here instead of random values
+                # Prepare ML feature dict for per-flight prediction
                 flight_data = {
+                    'flight_number': flight.flight_number,
+                    'airline': flight.airline.name if flight.airline else 'Unknown',
+                    'aircraft_type': flight.aircraft.type_code if flight.aircraft else 'Unknown',
+                    'origin': from_airport,
+                    'destination': to_airport,
+                    'scheduled_departure': flight.scheduled_departure,
+                    'actual_departure': flight.actual_departure,
+                    'scheduled_arrival': flight.scheduled_arrival,
+                    'actual_arrival': flight.actual_arrival,
+                    'gate': flight.gate,
+                    'terminal': flight.terminal,
+                    'status': flight.status,
+                    'seats_available': flight.seats_available,
+                    'total_seats': flight.total_seats,
+                    'route_frequency': flight.route_frequency,
+                    # Simulated and historic features
+                    'weather_condition': flight_weather,
+                    'current_nas_congestion': flight_nas_congestion,
+                    'current_airport_congestion': airport_congestion
+                }
+                try:
+                    ml_prediction = ml_predictor.predict_delay(flight_data)
+                    delay_minutes_pred = ml_prediction['predicted_delay_minutes']
+                    delay_probability = min(max(delay_minutes_pred/60, 0), 1)  # Assume 60+ mins ~ 1.0 risk
+                    delay_risk = ml_prediction['prediction_quality'].replace('_RISK', '')
+                except Exception as e:
+                    delay_probability = 0.2
+                    delay_minutes_pred = 5
+                    delay_risk = 'LOW'
+                # Convert to API format as before, but using the new prediction fields:
+                flights.append({
                     "flightNumber": flight.flight_number,
                     "airline": flight.airline.name if flight.airline else "Unknown",
                     "aircraftType": flight.aircraft.type_code if flight.aircraft else "Unknown",
@@ -359,40 +386,11 @@ def get_flight_status():
                     "delayPercentage": flight.delay_percentage,
                     "seatsAvailable": flight.seats_available or 0,
                     "totalSeats": flight.total_seats,
-                    "loadFactor": flight.load_factor,
-                    "onTimeProbability": flight.on_time_probability or 0.5,
-                    "delayProbability": flight.delay_probability,
+                    # Add prediction fields:
+                    "delayProbability": delay_probability,
+                    "predictedDelayMinutes": delay_minutes_pred,
                     "delayRisk": delay_risk,
-                    "delayRiskPercentage": delay_risk_percentage,
-                    "cancellationProbability": flight.cancellation_probability,
-                    "basePrice": flight.base_price,
-                    "currentPrice": flight.current_price,
-                    "currency": flight.currency,
-                    "durationMinutes": flight.duration_minutes,
-                    "distanceMiles": flight.distance_miles,
-                    # NEW: Comprehensive delay metrics
-                    "airTrafficDelayMinutes": flight.air_traffic_delay_minutes,
-                    "weatherDelayMinutes": flight.weather_delay_minutes,
-                    "securityDelayMinutes": flight.security_delay_minutes,
-                    "mechanicalDelayMinutes": flight.mechanical_delay_minutes,
-                    "crewDelayMinutes": flight.crew_delay_minutes,
-                    # NEW: Delay reason analysis
-                    "primaryDelayReason": flight.primary_delay_reason,
-                    "primaryDelayReasonPercentage": flight.primary_delay_reason_percentage,
-                    "secondaryDelayReason": flight.secondary_delay_reason,
-                    "delayReasonConfidence": flight.delay_reason_confidence,
-                    # NEW: Historical performance
-                    "routeOnTimePercentage": flight.route_on_time_percentage,
-                    "airlineOnTimePercentage": flight.airline_on_time_percentage,
-                    "timeOfDayDelayFactor": flight.time_of_day_delay_factor,
-                    "dayOfWeekDelayFactor": flight.day_of_week_delay_factor,
-                    "seasonalDelayFactor": flight.seasonal_delay_factor,
-                    # NEW: Real-time conditions
-                    "currentWeatherDelayRisk": flight.current_weather_delay_risk,
-                    "currentAirTrafficDelayRisk": flight.current_air_traffic_delay_risk,
-                    "currentAirportCongestionLevel": flight.current_airport_congestion_level
-                }
-                flights.append(flight_data)
+                })
             
             return jsonify({
                 "flights": flights,
