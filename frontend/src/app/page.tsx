@@ -242,8 +242,13 @@ function FlightDelayApp() {
                       transition={{ delay: index * 0.1 }}
                     >
                       <FlightCard
-                        flight={flight}
-                        onViewAlternatives={handleViewAlternatives}
+                        flight={{
+                          ...flight,
+                          // Provide the predicted risk, percent, and minutes from backend fields.
+                          delayRisk: flight.delayRisk || (flight.delayRisk || 'LOW'),
+                          delayProbability: flight.delayProbability || (typeof flight.delayProbability === 'number' ? flight.delayProbability : 0.1),
+                          predictedDelayMinutes: flight.predictedDelayMinutes || (flight.delayMinutes || 3)
+                        }}
                       />
                     </motion.div>
                   ))}

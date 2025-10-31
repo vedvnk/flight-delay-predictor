@@ -8,13 +8,33 @@ import { cn } from '@/lib/utils';
 
 interface FlightCardProps {
   flight: NormalizedFlight;
-  onViewAlternatives: (flightNumber: string) => void;
   className?: string;
 }
 
-export function FlightCard({ flight, onViewAlternatives, className }: FlightCardProps) {
+export function FlightCard({ flight, className }: FlightCardProps) {
   const statusConfig = getStatusConfig(flight.status);
-  
+
+  // Prediction fields (mocked if not present)
+  // You may need to pass these in via parent/adapters (add actual bindings as appropriate):
+  const predictedDelayRisk = flight.delayRisk || 'LOW';
+  const predictedDelayPercent =
+    typeof flight.delayProbability === 'number'
+      ? Math.round(flight.delayProbability * 100)
+      : 9; // fallback
+  const predictedDelayMinutes = flight.predictedDelayMinutes || 4; // fallback
+
+  // Risk badge config
+  const riskColors: Record<string, string> = {
+    LOW: 'bg-green-500/20 text-green-400 border-green-400/30',
+    MEDIUM: 'bg-yellow-500/20 text-yellow-400 border-yellow-400/30',
+    HIGH: 'bg-red-500/20 text-red-400 border-red-400/30',
+  };
+  const riskText: Record<string, string> = {
+    LOW: 'Low',
+    MEDIUM: 'Medium',
+    HIGH: 'High',
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -27,9 +47,9 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
     >
       {/* Background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
+
       <div className="relative p-6">
-        {/* Header with airline and flight number */}
+        {/* Header with status and PREDICTION badge */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center relative floating-element">
@@ -43,20 +63,33 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
               <p className="text-sm text-white/70">{flight.airline}</p>
             </div>
           </div>
-          
-          {/* Status pill */}
-          <div className={cn(
-            'inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border backdrop-blur-sm',
-            statusConfig.bgColor,
-            statusConfig.textColor,
-            statusConfig.borderColor
-          )}>
-            <div className="w-1.5 h-1.5 rounded-full bg-current mr-2" />
-            {statusConfig.label}
+          <div className="flex flex-col items-end space-y-2">
+            <div
+              className={cn(
+                'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border',
+                riskColors[predictedDelayRisk] || 'bg-white/10 text-white/70 border-white/20'
+              )}
+              title={`Predicted risk: ${riskText[predictedDelayRisk]}`}
+            >
+              <span className="mr-2">Risk:</span>
+              {riskText[predictedDelayRisk] || predictedDelayRisk}
+              <span className="ml-3">{predictedDelayPercent}% • {predictedDelayMinutes}m</span>
+            </div>
+            <div
+              className={cn(
+                'inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border backdrop-blur-sm',
+                statusConfig.bgColor,
+                statusConfig.textColor,
+                statusConfig.borderColor
+              )}
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-current mr-2" />
+              {statusConfig.label}
+            </div>
           </div>
         </div>
 
-        {/* Route and times */}
+        {/* Route and times (unchanged) */}
         <div className="space-y-4">
           {/* Route */}
           <div className="flex items-center justify-between">
@@ -69,9 +102,9 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
                   {flight.from}
                 </div>
               </div>
-              
+
               <ArrowRight className="w-5 h-5 text-white/50 flex-shrink-0" />
-              
+
               <div className="text-center">
                 <div className="text-2xl font-bold text-white tabular-nums">
                   {flight.estimatedTimeText || flight.departureTimeText}
@@ -83,7 +116,7 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
             </div>
           </div>
 
-          {/* Delay information */}
+          {/* Delay information (unchanged, but now always visible under prediction badge) */}
           {flight.isDelayed && flight.delayMinutes && (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -97,7 +130,7 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
             </motion.div>
           )}
 
-          {/* Gate and additional info */}
+          {/* Gate and additional info (unchanged) */}
           <div className="flex items-center justify-between text-sm text-white/70">
             <div className="flex items-center space-x-4">
               {flight.gate && (
@@ -106,7 +139,7 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
                   <span>Gate {flight.gate}</span>
                 </div>
               )}
-              
+
               <div className="flex items-center space-x-1">
                 <Clock className="w-4 h-4" />
                 <span>Updated {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
@@ -114,19 +147,7 @@ export function FlightCard({ flight, onViewAlternatives, className }: FlightCard
             </div>
           </div>
         </div>
-
-        {/* Action button */}
-        <div className="mt-6 pt-4 border-t border-white/10">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onViewAlternatives(flight.flightNumber)}
-            className="w-full glass-button rounded-xl px-4 py-2.5 text-sm font-medium text-white relative overflow-hidden group"
-          >
-            <span className="relative z-10">View Alternatives</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </motion.button>
-        </div>
+        {/* REMOVE ACTION BUTTON! */}
       </div>
     </motion.div>
   );

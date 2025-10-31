@@ -192,7 +192,6 @@ export function SearchForm({ onSubmit, isLoading = false, className }: SearchFor
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  min={new Date().toISOString().split('T')[0]}
                   className="w-full px-4 py-3 glass-input rounded-xl text-white focus:outline-none transition-all duration-200"
                 />
                 <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/50" />
