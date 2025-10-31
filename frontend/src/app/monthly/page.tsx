@@ -122,7 +122,7 @@ function MonthlyDashboard() {
             transition={{ duration: 0.6 }}
             className="glass-morphism-advanced rounded-2xl p-6 hover-lift relative overflow-hidden"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
               {/* Airline selector */}
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-2">
@@ -141,26 +141,70 @@ function MonthlyDashboard() {
                 </select>
               </div>
 
-              {/* Month selector */}
-              <div>
-                <label className="block text-sm font-medium text-white/80 mb-2">
-                  Select Month
-                </label>
-                <select
-                  value={`${selectedYear}-${selectedMonth}`}
-                  onChange={(e) => {
-                    const [year, month] = e.target.value.split('-').map(Number);
-                    handleMonthChange(year, month);
-                  }}
-                  className="w-full px-4 py-3 glass-input rounded-xl text-white focus:outline-none transition-all duration-200"
-                >
-                  {monthsData?.periods.map((period) => (
-                    <option key={period.label} value={period.label}>
-                      {period.month_name}
-                    </option>
-                  ))}
-                </select>
+              {/* Year and Month selectors */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Year selector */}
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">
+                    Year
+                  </label>
+                  <select
+                    value={selectedYear}
+                    onChange={(e) => handleMonthChange(Number(e.target.value), selectedMonth)}
+                    className="w-full px-4 py-3 glass-input rounded-xl text-white focus:outline-none transition-all duration-200"
+                  >
+                    {monthsData && Array.from(new Set(monthsData.periods.map(p => p.year))).sort((a, b) => b - a).map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Month selector */}
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">
+                    Month
+                  </label>
+                  <select
+                    value={selectedMonth}
+                    onChange={(e) => handleMonthChange(selectedYear, Number(e.target.value))}
+                    className="w-full px-4 py-3 glass-input rounded-xl text-white focus:outline-none transition-all duration-200"
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => (
+                      <option key={month} value={month}>
+                        {new Date(selectedYear, month - 1, 1).toLocaleDateString('en-US', { month: 'long' })}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
+              {/* Quick access buttons for recent months */}
+              {monthsData && monthsData.periods.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">
+                    Quick Select
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {monthsData.periods.slice(0, 6).map((period) => (
+                      <motion.button
+                        key={period.label}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => handleMonthChange(period.year, period.month)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                          selectedYear === period.year && selectedMonth === period.month
+                            ? 'bg-blue-500/30 text-blue-300 border-2 border-blue-400/50'
+                            : 'bg-white/10 text-white/70 hover:bg-white/20 border-2 border-white/20'
+                        }`}
+                      >
+                        {period.month_name}
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
 

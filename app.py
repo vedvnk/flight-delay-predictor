@@ -549,7 +549,7 @@ def get_monthly_airline_performance():
 
 @app.route('/api/airline-performance/predict')
 def predict_monthly_delay():
-    """Predict delays for a given airline and month based on historical data"""
+    """Get performance metrics for a given airline and month based on historical data"""
     year = request.args.get('year', type=int)
     month = request.args.get('month', type=int)
     airline_code = request.args.get('airline', '').upper()
@@ -567,7 +567,66 @@ def predict_monthly_delay():
             if not airline:
                 return jsonify({'error': f'Airline not found: {airline_code}'}), 404
             
-            # Get historical performance data
+            # Determine if this is historical or future data
+            # Historical data cutoff: Before 2026
+            is_historical = year < 2026
+            
+            # First, try to get actual data for the requested month
+            actual_data = AirlineMonthlyPerformance.query.filter(
+                AirlineMonthlyPerformance.airline_id == airline.id,
+                AirlineMonthlyPerformance.year == year,
+                AirlineMonthlyPerformance.month == month
+            ).first()
+            
+            if actual_data and is_historical:
+                # Return actual data if available and it's historical
+                delay_probability = 100 - (actual_data.on_time_percentage or 0)
+                delay_risk_category = "LOW" if delay_probability < 15 else ("MEDIUM" if delay_probability < 30 else "HIGH")
+                delay_risk_color = "green" if delay_probability < 15 else ("yellow" if delay_probability < 30 else "red")
+                
+                avg_delay_minutes = (actual_data.total_delay_minutes or 0) / (actual_data.total_arrivals or 1)
+                delay_duration_category = "LOW" if avg_delay_minutes < 30 else ("MEDIUM" if avg_delay_minutes < 60 else "HIGH")
+                
+                return jsonify({
+                    'airline': {
+                        'code': airline.iata_code,
+                        'name': airline.name
+                    },
+                    'year': year,
+                    'month': month,
+                    'data_type': 'actual',
+                    'prediction': {
+                        'delay_probability': round(delay_probability, 1),
+                        'delay_risk_category': delay_risk_category,
+                        'delay_risk_color': delay_risk_color,
+                        'predicted_delay_duration_minutes': round(avg_delay_minutes, 1),
+                        'predicted_delay_duration_formatted': f"{int(avg_delay_minutes)} min",
+                        'delay_duration_category': delay_duration_category
+                    },
+                    'metrics': {
+                        'estimated_completion_factor': actual_data.completion_factor,
+                        'estimated_cancellation_rate': (actual_data.cancellations or 0) / (actual_data.total_arrivals or 1) * 100,
+                        'on_time_percentage': actual_data.on_time_percentage
+                    },
+                    'delay_causes': [
+                        {'cause': 'National Air System', 'percentage': round((actual_data.nas_delay_minutes or 0) / (actual_data.total_delay_minutes or 1) * 100, 1), 'color': '#3b82f6'},
+                        {'cause': 'Carrier', 'percentage': round((actual_data.carrier_delay_minutes or 0) / (actual_data.total_delay_minutes or 1) * 100, 1), 'color': '#ef4444'},
+                        {'cause': 'Late Aircraft', 'percentage': round((actual_data.late_aircraft_delay_minutes or 0) / (actual_data.total_delay_minutes or 1) * 100, 1), 'color': '#f59e0b'},
+                        {'cause': 'Weather', 'percentage': round((actual_data.weather_delay_minutes or 0) / (actual_data.total_delay_minutes or 1) * 100, 1), 'color': '#10b981'},
+                        {'cause': 'Security', 'percentage': round((actual_data.security_delay_minutes or 0) / (actual_data.total_delay_minutes or 1) * 100, 1), 'color': '#8b5cf6'}
+                    ],
+                    'historical_basis': {
+                        'months_analyzed': 1,
+                        'latest_data': {
+                            'year': actual_data.year,
+                            'month': actual_data.month,
+                            'on_time_percentage': actual_data.on_time_percentage,
+                            'completion_factor': actual_data.completion_factor
+                        }
+                    }
+                })
+            
+            # Get historical performance data for prediction
             historical_data = AirlineMonthlyPerformance.query.filter(
                 AirlineMonthlyPerformance.airline_id == airline.id
             ).order_by(
@@ -643,6 +702,7 @@ def predict_monthly_delay():
                 },
                 'year': year,
                 'month': month,
+                'data_type': 'predicted',
                 'prediction': {
                     'delay_probability': round(delay_probability, 1),
                     'delay_risk_category': delay_risk_category,
