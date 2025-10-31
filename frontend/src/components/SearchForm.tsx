@@ -19,10 +19,11 @@ interface RecentSearch {
   timestamp: Date;
 }
 
+const today = new Date().toISOString().split('T')[0];
 export function SearchForm({ onSubmit, isLoading = false, className }: SearchFormProps) {
   const [from, setFrom] = useState('LAX');
   const [to, setTo] = useState('ORD');
-  const [date, setDate] = useState('2025-09-21');
+  const [date, setDate] = useState(today);
   
   const [fromSuggestions, setFromSuggestions] = useState<Array<{code: string; name: string; fullText: string}>>([]);
   const [toSuggestions, setToSuggestions] = useState<Array<{code: string; name: string; fullText: string}>>([]);

@@ -73,7 +73,9 @@ export function normalizeFlight(flight: FlightStatus): NormalizedFlight {
   
   return {
     flightNumber: flight.flightNumber,
-    airline: flight.airline,
+    airline: typeof flight.airline === 'string'
+      ? flight.airline
+      : (flight.airline?.name || flight.airline?.code || 'Unknown Airline'),
     from: flight.from,
     to: flight.to,
     scheduledDeparture,
