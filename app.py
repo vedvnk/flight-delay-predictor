@@ -577,8 +577,11 @@ def predict_monthly_delay():
             ).first()
             
             if actual_data and is_historical:
-                # Return actual data if available and it's historical
-                delay_probability = 100 - (actual_data.on_time_percentage or 0)
+                # Calculate chance of delay FROM DATA, not derived from on-time %
+                if actual_data.arrivals_delayed_15_min and actual_data.total_arrivals and actual_data.total_arrivals > 0:
+                    delay_probability = (actual_data.arrivals_delayed_15_min / actual_data.total_arrivals) * 100
+                else:
+                    delay_probability = 100 - (actual_data.on_time_percentage or 0)
                 delay_risk_category = "LOW" if delay_probability < 15 else ("MEDIUM" if delay_probability < 30 else "HIGH")
                 delay_risk_color = "green" if delay_probability < 15 else ("yellow" if delay_probability < 30 else "red")
                 
