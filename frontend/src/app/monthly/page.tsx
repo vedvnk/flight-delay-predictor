@@ -179,32 +179,6 @@ function MonthlyDashboard() {
                   </select>
                 </div>
               </div>
-
-              {/* Quick access buttons for recent months */}
-              {monthsData && monthsData.periods.length > 0 && (
-                <div>
-                  <label className="block text-sm font-medium text-white/80 mb-2">
-                    Quick Select
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {monthsData.periods.slice(0, 6).map((period) => (
-                      <motion.button
-                        key={period.label}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleMonthChange(period.year, period.month)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                          selectedYear === period.year && selectedMonth === period.month
-                            ? 'bg-blue-500/30 text-blue-300 border-2 border-blue-400/50'
-                            : 'bg-white/10 text-white/70 hover:bg-white/20 border-2 border-white/20'
-                        }`}
-                      >
-                        {period.month_name}
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </motion.div>
 
