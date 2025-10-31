@@ -114,6 +114,30 @@ class ApiClient {
     // Validate response with Zod
     return alternativesResponseSchema.parse(data);
   }
+
+  async getAirlines(): Promise<{ airlines: Array<{ iata_code: string; name: string; icao_code: string }>; total: number }> {
+    const data = await this.request<unknown>('/api/airlines');
+    return data as { airlines: Array<{ iata_code: string; name: string; icao_code: string }>; total: number };
+  }
+
+  async getAvailableMonths(): Promise<{ periods: Array<{ year: number; month: number; label: string; month_name: string }>; total: number }> {
+    const data = await this.request<unknown>('/api/airline-performance/available-months');
+    return data as { periods: Array<{ year: number; month: number; label: string; month_name: string }>; total: number };
+  }
+
+  async getMonthlyPrediction(params: {
+    year: number;
+    month: number;
+    airline: string;
+  }): Promise<any> {
+    const searchParams = new URLSearchParams({
+      year: params.year.toString(),
+      month: params.month.toString(),
+      airline: params.airline,
+    });
+    const data = await this.request<unknown>(`/api/airline-performance/predict?${searchParams}`);
+    return data;
+  }
 }
 
 // Export singleton instance
@@ -125,4 +149,8 @@ export const queryKeys = {
     ['flightStatus', from, to, date] as const,
   alternatives: (flightNumber: string) => 
     ['alternatives', flightNumber] as const,
+  airlines: ['airlines'] as const,
+  availableMonths: ['availableMonths'] as const,
+  monthlyPrediction: (year: number, month: number, airline: string) =>
+    ['monthlyPrediction', year, month, airline] as const,
 } as const;

@@ -4,7 +4,8 @@ import { useState, useCallback } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { motion } from 'framer-motion';
-import { Plane, TrendingUp, Users, Clock } from 'lucide-react';
+import { Plane, TrendingUp, Users, Clock, BarChart3 } from 'lucide-react';
+import Link from 'next/link';
 
 // Components
 import { SearchForm } from '@/components/SearchForm';
@@ -145,6 +146,13 @@ function FlightDelayApp() {
             </div>
             
             <div className="flex items-center space-x-4">
+              <Link
+                href="/monthly"
+                className="flex items-center space-x-2 px-4 py-2 glass-button rounded-lg hover:bg-white/10 transition-all duration-200"
+              >
+                <BarChart3 className="w-4 h-4 text-blue-300" />
+                <span className="text-sm text-white">Monthly Analysis</span>
+              </Link>
               <LastUpdated
                 lastUpdated={lastUpdated}
                 isRefreshing={isLoadingFlights}

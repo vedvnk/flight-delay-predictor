@@ -351,3 +351,84 @@ class Weather(db.Model):
             'delay_factor': self.delay_factor,
             'cancellation_risk': self.cancellation_risk
         }
+
+class AirlineMonthlyPerformance(db.Model):
+    """Monthly on-time performance statistics by airline and airport"""
+    __tablename__ = 'airline_monthly_performance'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    year = db.Column(db.Integer, nullable=False, index=True)
+    month = db.Column(db.Integer, nullable=False, index=True)
+    airline_id = db.Column(db.Integer, db.ForeignKey('airlines.id'), nullable=False)
+    airport_id = db.Column(db.Integer, db.ForeignKey('airports.id'), nullable=True)
+    
+    # Flight counts
+    total_arrivals = db.Column(db.Integer, nullable=True)
+    arrivals_delayed_15_min = db.Column(db.Integer, nullable=True)
+    
+    # Delay counts by cause
+    carrier_delay_count = db.Column(db.Float, nullable=True)
+    weather_delay_count = db.Column(db.Float, nullable=True)
+    nas_delay_count = db.Column(db.Float, nullable=True)  # National Air System
+    security_delay_count = db.Column(db.Float, nullable=True)
+    late_aircraft_delay_count = db.Column(db.Float, nullable=True)
+    
+    # Cancellations and diversions
+    cancellations = db.Column(db.Integer, nullable=True)
+    diversions = db.Column(db.Integer, nullable=True)
+    
+    # Total delay minutes
+    total_delay_minutes = db.Column(db.Integer, nullable=True)
+    
+    # Delay minutes by cause
+    carrier_delay_minutes = db.Column(db.Integer, nullable=True)
+    weather_delay_minutes = db.Column(db.Integer, nullable=True)
+    nas_delay_minutes = db.Column(db.Integer, nullable=True)
+    security_delay_minutes = db.Column(db.Integer, nullable=True)
+    late_aircraft_delay_minutes = db.Column(db.Integer, nullable=True)
+    
+    # Performance metrics
+    on_time_percentage = db.Column(db.Float, nullable=True)
+    completion_factor = db.Column(db.Float, nullable=True)
+    
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    airline = db.relationship('Airline', backref='monthly_performance')
+    airport = db.relationship('Airport', backref='airline_monthly_performance')
+    
+    # Unique constraint
+    __table_args__ = (
+        Index('idx_year_month_airline_airport', 'year', 'month', 'airline_id', 'airport_id'),
+    )
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'year': self.year,
+            'month': self.month,
+            'airline': self.airline.to_dict() if self.airline else None,
+            'airport': self.airport.to_dict() if self.airport else None,
+            'total_arrivals': self.total_arrivals,
+            'arrivals_delayed_15_min': self.arrivals_delayed_15_min,
+            'delay_counts': {
+                'carrier': self.carrier_delay_count,
+                'weather': self.weather_delay_count,
+                'nas': self.nas_delay_count,
+                'security': self.security_delay_count,
+                'late_aircraft': self.late_aircraft_delay_count
+            },
+            'cancellations': self.cancellations,
+            'diversions': self.diversions,
+            'total_delay_minutes': self.total_delay_minutes,
+            'delay_minutes': {
+                'carrier': self.carrier_delay_minutes,
+                'weather': self.weather_delay_minutes,
+                'nas': self.nas_delay_minutes,
+                'security': self.security_delay_minutes,
+                'late_aircraft': self.late_aircraft_delay_minutes
+            },
+            'on_time_percentage': self.on_time_percentage,
+            'completion_factor': self.completion_factor
+        }

@@ -10,7 +10,7 @@ from io import BytesIO
 import json
 from datetime import datetime, timezone, timedelta
 import os
-from models import db, Airport, Airline, Aircraft, Flight, FlightStatus, Route, Weather
+from models import db, Airport, Airline, Aircraft, Flight, FlightStatus, Route, Weather, AirlineMonthlyPerformance
 from ml_predictor import FlightDelayPredictor
 
 app = Flask(__name__)
@@ -80,7 +80,11 @@ def index():
             '/api/predict/ml/<flight_id>',
             '/api/models/performance',
             '/flights/status',
-            '/flights/delay-analysis'
+            '/flights/delay-analysis',
+            '/api/airlines',
+            '/api/airline-performance/monthly',
+            '/api/airline-performance/predict',
+            '/api/airline-performance/available-months'
         ]
     })
 
@@ -492,6 +496,239 @@ def get_delay_analysis():
         
     except Exception as e:
         return jsonify({'error': f'Error analyzing delays: {str(e)}'}), 500
+
+@app.route('/api/airline-performance/monthly')
+def get_monthly_airline_performance():
+    """Get monthly airline performance statistics"""
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
+    airline_code = request.args.get('airline', '').upper()
+    
+    if not year or not month:
+        return jsonify({'error': 'Missing required parameters: year, month'}), 400
+    
+    if not db_initialized:
+        return jsonify({'error': 'Database not initialized. Please run init_db.py first.'}), 500
+    
+    try:
+        with app.app_context():
+            # Build query
+            query = AirlineMonthlyPerformance.query.filter(
+                AirlineMonthlyPerformance.year == year,
+                AirlineMonthlyPerformance.month == month
+            )
+            
+            # Filter by airline if specified
+            if airline_code:
+                airline = Airline.query.filter_by(iata_code=airline_code).first()
+                if airline:
+                    query = query.filter(AirlineMonthlyPerformance.airline_id == airline.id)
+            
+            performances = query.options(
+                db.joinedload(AirlineMonthlyPerformance.airline),
+                db.joinedload(AirlineMonthlyPerformance.airport)
+            ).all()
+            
+            if not performances:
+                return jsonify({
+                    'performances': [],
+                    'message': f'No data found for {year}-{month:02d}' + (f' (airline: {airline_code})' if airline_code else '')
+                })
+            
+            performances_list = [perf.to_dict() for perf in performances]
+            
+            return jsonify({
+                'performances': performances_list,
+                'year': year,
+                'month': month,
+                'total_records': len(performances_list)
+            })
+            
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch performance data: {str(e)}'}), 500
+
+@app.route('/api/airline-performance/predict')
+def predict_monthly_delay():
+    """Predict delays for a given airline and month based on historical data"""
+    year = request.args.get('year', type=int)
+    month = request.args.get('month', type=int)
+    airline_code = request.args.get('airline', '').upper()
+    
+    if not year or not month or not airline_code:
+        return jsonify({'error': 'Missing required parameters: year, month, airline'}), 400
+    
+    if not db_initialized:
+        return jsonify({'error': 'Database not initialized. Please run init_db.py first.'}), 500
+    
+    try:
+        with app.app_context():
+            # Get airline
+            airline = Airline.query.filter_by(iata_code=airline_code).first()
+            if not airline:
+                return jsonify({'error': f'Airline not found: {airline_code}'}), 404
+            
+            # Get historical performance data
+            historical_data = AirlineMonthlyPerformance.query.filter(
+                AirlineMonthlyPerformance.airline_id == airline.id
+            ).order_by(
+                AirlineMonthlyPerformance.year.desc(),
+                AirlineMonthlyPerformance.month.desc()
+            ).limit(12).all()
+            
+            if not historical_data:
+                return jsonify({'error': f'No historical data found for airline: {airline_code}'}), 404
+            
+            # Get most recent data as baseline
+            latest = historical_data[0]
+            
+            # Calculate predictions based on historical trends
+            # Simple approach: use recent average
+            avg_delay_rate = sum(1 - (perf.on_time_percentage or 0) / 100 for perf in historical_data) / len(historical_data)
+            avg_delay_minutes = sum((perf.total_delay_minutes or 0) / (perf.total_arrivals or 1) for perf in historical_data) / len(historical_data)
+            
+            # Predict delay probability
+            delay_probability = avg_delay_rate * 100
+            
+            # Categorize delay risk
+            if delay_probability < 15:
+                delay_risk_category = "LOW"
+                delay_risk_color = "green"
+            elif delay_probability < 30:
+                delay_risk_category = "MEDIUM"
+                delay_risk_color = "yellow"
+            else:
+                delay_risk_category = "HIGH"
+                delay_risk_color = "red"
+            
+            # Predict delay duration based on historical average
+            predicted_delay_duration = avg_delay_minutes
+            
+            # Categorize delay duration
+            if predicted_delay_duration < 30:
+                delay_duration_category = "LOW"
+            elif predicted_delay_duration < 60:
+                delay_duration_category = "MEDIUM"
+            else:
+                delay_duration_category = "HIGH"
+            
+            # Calculate delay causes distribution from historical data
+            total_carrier = sum(perf.carrier_delay_minutes or 0 for perf in historical_data)
+            total_weather = sum(perf.weather_delay_minutes or 0 for perf in historical_data)
+            total_nas = sum(perf.nas_delay_minutes or 0 for perf in historical_data)
+            total_late_aircraft = sum(perf.late_aircraft_delay_minutes or 0 for perf in historical_data)
+            total_security = sum(perf.security_delay_minutes or 0 for perf in historical_data)
+            
+            total_all = total_carrier + total_weather + total_nas + total_late_aircraft + total_security
+            
+            delay_causes = []
+            if total_all > 0:
+                delay_causes = [
+                    {'cause': 'National Air System', 'percentage': round((total_nas / total_all) * 100, 1), 'color': '#3b82f6'},
+                    {'cause': 'Carrier', 'percentage': round((total_carrier / total_all) * 100, 1), 'color': '#ef4444'},
+                    {'cause': 'Late Aircraft', 'percentage': round((total_late_aircraft / total_all) * 100, 1), 'color': '#f59e0b'},
+                    {'cause': 'Weather', 'percentage': round((total_weather / total_all) * 100, 1), 'color': '#10b981'},
+                    {'cause': 'Security', 'percentage': round((total_security / total_all) * 100, 1), 'color': '#8b5cf6'}
+                ]
+                # Sort by percentage descending
+                delay_causes.sort(key=lambda x: x['percentage'], reverse=True)
+            
+            # Additional metrics
+            avg_completion_factor = sum(perf.completion_factor or 0 for perf in historical_data) / len(historical_data)
+            avg_cancellation_rate = sum((perf.cancellations or 0) / (perf.total_arrivals or 1) * 100 for perf in historical_data) / len(historical_data)
+            
+            prediction = {
+                'airline': {
+                    'code': airline.iata_code,
+                    'name': airline.name
+                },
+                'year': year,
+                'month': month,
+                'prediction': {
+                    'delay_probability': round(delay_probability, 1),
+                    'delay_risk_category': delay_risk_category,
+                    'delay_risk_color': delay_risk_color,
+                    'predicted_delay_duration_minutes': round(predicted_delay_duration, 1),
+                    'predicted_delay_duration_formatted': f"{int(predicted_delay_duration)} min",
+                    'delay_duration_category': delay_duration_category
+                },
+                'metrics': {
+                    'estimated_completion_factor': round(avg_completion_factor, 2),
+                    'estimated_cancellation_rate': round(avg_cancellation_rate, 2),
+                    'on_time_percentage': round(100 - delay_probability, 2)
+                },
+                'delay_causes': delay_causes,
+                'historical_basis': {
+                    'months_analyzed': len(historical_data),
+                    'latest_data': {
+                        'year': latest.year,
+                        'month': latest.month,
+                        'on_time_percentage': latest.on_time_percentage,
+                        'completion_factor': latest.completion_factor
+                    }
+                }
+            }
+            
+            return jsonify(prediction)
+            
+    except Exception as e:
+        return jsonify({'error': f'Failed to generate prediction: {str(e)}'}), 500
+
+@app.route('/api/airlines')
+def get_airlines():
+    """Get list of all airlines with performance data"""
+    if not db_initialized:
+        return jsonify({'error': 'Database not initialized. Please run init_db.py first.'}), 500
+    
+    try:
+        with app.app_context():
+            # Get airlines that have performance data
+            airlines_with_data = db.session.query(Airline).join(
+                AirlineMonthlyPerformance
+            ).distinct().all()
+            
+            airlines_list = [airline.to_dict() for airline in airlines_with_data]
+            
+            return jsonify({
+                'airlines': airlines_list,
+                'total': len(airlines_list)
+            })
+            
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch airlines: {str(e)}'}), 500
+
+@app.route('/api/airline-performance/available-months')
+def get_available_months():
+    """Get list of available year-month combinations"""
+    if not db_initialized:
+        return jsonify({'error': 'Database not initialized. Please run init_db.py first.'}), 500
+    
+    try:
+        with app.app_context():
+            periods = db.session.query(
+                AirlineMonthlyPerformance.year,
+                AirlineMonthlyPerformance.month
+            ).distinct().order_by(
+                AirlineMonthlyPerformance.year.desc(),
+                AirlineMonthlyPerformance.month.desc()
+            ).all()
+            
+            periods_list = [
+                {
+                    'year': year,
+                    'month': month,
+                    'label': f"{year}-{month:02d}",
+                    'month_name': datetime(year, month, 1).strftime('%B %Y')
+                }
+                for year, month in periods
+            ]
+            
+            return jsonify({
+                'periods': periods_list,
+                'total': len(periods_list)
+            })
+            
+    except Exception as e:
+        return jsonify({'error': f'Failed to fetch available months: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
