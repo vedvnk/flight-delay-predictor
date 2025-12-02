@@ -34,7 +34,7 @@ export function FlightCard({ flight, className }: FlightCardProps) {
     MEDIUM: 'Medium',
     HIGH: 'High',
   };
-
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -47,7 +47,7 @@ export function FlightCard({ flight, className }: FlightCardProps) {
     >
       {/* Background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
+      
       <div className="relative p-6">
         {/* Header with status and PREDICTION badge */}
         <div className="flex items-center justify-between mb-4">
@@ -77,14 +77,14 @@ export function FlightCard({ flight, className }: FlightCardProps) {
             </div>
             <div
               className={cn(
-                'inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border backdrop-blur-sm',
-                statusConfig.bgColor,
-                statusConfig.textColor,
-                statusConfig.borderColor
+            'inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border backdrop-blur-sm',
+            statusConfig.bgColor,
+            statusConfig.textColor,
+            statusConfig.borderColor
               )}
             >
-              <div className="w-1.5 h-1.5 rounded-full bg-current mr-2" />
-              {statusConfig.label}
+            <div className="w-1.5 h-1.5 rounded-full bg-current mr-2" />
+            {statusConfig.label}
             </div>
           </div>
         </div>
@@ -102,9 +102,9 @@ export function FlightCard({ flight, className }: FlightCardProps) {
                   {flight.from}
                 </div>
               </div>
-
+              
               <ArrowRight className="w-5 h-5 text-white/50 flex-shrink-0" />
-
+              
               <div className="text-center">
                 <div className="text-2xl font-bold text-white tabular-nums">
                   {flight.estimatedTimeText || flight.departureTimeText}
@@ -139,7 +139,7 @@ export function FlightCard({ flight, className }: FlightCardProps) {
                   <span>Gate {flight.gate}</span>
                 </div>
               )}
-
+              
               <div className="flex items-center space-x-1">
                 <Clock className="w-4 h-4" />
                 <span>Updated {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>

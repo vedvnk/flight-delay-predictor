@@ -1,0 +1,394 @@
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Serving Flask app 'app'
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:8000
+Press CTRL+C to quit
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+127.0.0.1 - - [02/Dec/2025 16:45:33] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:06] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:06] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:11] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:11] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:32] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:32] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:36] "OPTIONS /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:36] "OPTIONS /api/airline-performance/predict?year=2025&month=6&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:36] "OPTIONS /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:36] "GET /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:36] "GET /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:36] "GET /api/airline-performance/predict?year=2025&month=6&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:38] "OPTIONS /api/airline-performance/predict?year=2025&month=6&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:38] "GET /api/airline-performance/predict?year=2025&month=6&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:40] "OPTIONS /api/airline-performance/predict?year=2026&month=6&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:40] "GET /api/airline-performance/predict?year=2026&month=6&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:42] "OPTIONS /api/airline-performance/predict?year=2026&month=7&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:42] "GET /api/airline-performance/predict?year=2026&month=7&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:46] "OPTIONS /api/airline-performance/predict?year=2025&month=7&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:46] "GET /api/airline-performance/predict?year=2025&month=7&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:48] "OPTIONS /api/airline-performance/predict?year=2025&month=12&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:48] "GET /api/airline-performance/predict?year=2025&month=12&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:53] "OPTIONS /api/airline-performance/predict?year=2026&month=12&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:53] "GET /api/airline-performance/predict?year=2026&month=12&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:56] "OPTIONS /api/airline-performance/predict?year=2026&month=1&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:56] "GET /api/airline-performance/predict?year=2026&month=1&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:58] "OPTIONS /api/airline-performance/predict?year=2026&month=2&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:46:58] "GET /api/airline-performance/predict?year=2026&month=2&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:00] "OPTIONS /api/airline-performance/predict?year=2026&month=3&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:00] "GET /api/airline-performance/predict?year=2026&month=3&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:01] "OPTIONS /api/airline-performance/predict?year=2026&month=8&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:01] "GET /api/airline-performance/predict?year=2026&month=8&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:07] "OPTIONS /api/airline-performance/predict?year=2026&month=10&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:07] "GET /api/airline-performance/predict?year=2026&month=10&airline=B6 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:10] "OPTIONS /api/airline-performance/predict?year=2026&month=10&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:10] "GET /api/airline-performance/predict?year=2026&month=10&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:12] "OPTIONS /api/airline-performance/predict?year=2026&month=11&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:12] "GET /api/airline-performance/predict?year=2026&month=11&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:14] "OPTIONS /api/airline-performance/predict?year=2026&month=12&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:47:14] "GET /api/airline-performance/predict?year=2026&month=12&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:31] "OPTIONS /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:31] "OPTIONS /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:31] "OPTIONS /api/airline-performance/predict?year=2026&month=12&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:31] "GET /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:31] "GET /api/airline-performance/predict?year=2026&month=12&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:31] "GET /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:38] "OPTIONS /api/airline-performance/predict?year=2026&month=11&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:38] "GET /api/airline-performance/predict?year=2026&month=11&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:39] "OPTIONS /api/airline-performance/predict?year=2026&month=6&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:39] "GET /api/airline-performance/predict?year=2026&month=6&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:41] "OPTIONS /api/airline-performance/predict?year=2026&month=3&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:49:41] "GET /api/airline-performance/predict?year=2026&month=3&airline=AS HTTP/1.1" 200 -
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+127.0.0.1 - - [02/Dec/2025 16:50:36] "OPTIONS /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:50:36] "OPTIONS /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:50:36] "OPTIONS /api/airline-performance/predict?year=2026&month=3&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:50:36] "GET /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:50:36] "GET /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:50:36] "GET /api/airline-performance/predict?year=2026&month=3&airline=AS HTTP/1.1" 200 -
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/update_flights_daily.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/update_flights_daily.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/update_flights_daily.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+127.0.0.1 - - [02/Dec/2025 16:57:43] "OPTIONS /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:57:43] "OPTIONS /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:57:43] "OPTIONS /api/airline-performance/predict?year=2026&month=3&airline=AS HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:57:47] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:57:49] "GET /api/airline-performance/available-months HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 16:57:49] "GET /api/airlines HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 16:57:49] "GET /api/airline-performance/predict?year=2026&month=3&airline=AS HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 16:57:52] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 16:57:53] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:57:59] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 16:58:01] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:58:06] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 16:58:10] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:58:16] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 16:58:22] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:58:28] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 16:58:37] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:58:43] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 16:58:50] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 16:58:55] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 500 -
+127.0.0.1 - - [02/Dec/2025 17:00:24] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:00:24] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:00:26] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:00:27] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:00:52] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-03 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:00:52] "GET /flights/status?from=LAX&to=ORD&date=2025-12-03 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:01:03] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-06 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:01:03] "GET /flights/status?from=LAX&to=ORD&date=2025-12-06 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:01:09] "OPTIONS /flights/status?from=MUM&to=ORD&date=2025-12-06 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:01:09] "GET /flights/status?from=MUM&to=ORD&date=2025-12-06 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:01:14] "OPTIONS /flights/status?from=SEA&to=ORD&date=2025-12-06 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:01:14] "GET /flights/status?from=SEA&to=ORD&date=2025-12-06 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:01:33] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:01:33] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:06] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:07] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:08] "OPTIONS /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:08] "OPTIONS /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:08] "OPTIONS /api/airline-performance/predict?year=2025&month=6&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:09] "GET /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:09] "GET /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:09] "GET /api/airline-performance/predict?year=2025&month=6&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:14] "OPTIONS /api/airline-performance/predict?year=2026&month=6&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:14] "GET /api/airline-performance/predict?year=2026&month=6&airline=DL HTTP/1.1" 200 -
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/update_flights_daily.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/update_flights_daily.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+127.0.0.1 - - [02/Dec/2025 17:02:20] "OPTIONS /api/airline-performance/predict?year=2026&month=1&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:20] "GET /api/airline-performance/predict?year=2026&month=1&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:22] "OPTIONS /api/airline-performance/predict?year=2026&month=2&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:22] "GET /api/airline-performance/predict?year=2026&month=2&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:23] "OPTIONS /api/airline-performance/predict?year=2026&month=4&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:23] "GET /api/airline-performance/predict?year=2026&month=4&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:34] "OPTIONS /api/airline-performance/predict?year=2027&month=6&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:34] "GET /api/airline-performance/predict?year=2027&month=6&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:46] "OPTIONS /api/airline-performance/predict?year=2026&month=7&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:46] "GET /api/airline-performance/predict?year=2026&month=7&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:48] "OPTIONS /api/airline-performance/predict?year=2026&month=11&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:02:48] "GET /api/airline-performance/predict?year=2026&month=11&airline=DL HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:03:03] "OPTIONS /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:03:03] "OPTIONS /api/airlines HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:03:03] "GET /api/airline-performance/available-months HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:03:03] "GET /api/airlines HTTP/1.1" 200 -
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+127.0.0.1 - - [02/Dec/2025 17:04:01] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:04:01] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:04:04] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+WARNING:root:ML prediction failed for flight US9186: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS4057: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AA1647: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ7227: 'delay_minutes'
+WARNING:root:ML prediction failed for flight VX1939: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS3650: 'delay_minutes'
+WARNING:root:ML prediction failed for flight UA9616: 'delay_minutes'
+WARNING:root:ML prediction failed for flight NK3927: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ4303: 'delay_minutes'
+WARNING:root:ML prediction failed for flight VX6963: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS8283: 'delay_minutes'
+WARNING:root:ML prediction failed for flight UA3634: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ1865: 'delay_minutes'
+127.0.0.1 - - [02/Dec/2025 17:04:04] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:04:04] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+INFO:werkzeug: * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+INFO:werkzeug: * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/update_flights_daily.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/update_flights_daily.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+127.0.0.1 - - [02/Dec/2025 17:05:29] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+WARNING:root:ML prediction failed for flight US9186: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS4057: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AA1647: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ7227: 'delay_minutes'
+WARNING:root:ML prediction failed for flight VX1939: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS3650: 'delay_minutes'
+WARNING:root:ML prediction failed for flight UA9616: 'delay_minutes'
+WARNING:root:ML prediction failed for flight NK3927: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ4303: 'delay_minutes'
+WARNING:root:ML prediction failed for flight VX6963: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS8283: 'delay_minutes'
+WARNING:root:ML prediction failed for flight UA3634: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ1865: 'delay_minutes'
+127.0.0.1 - - [02/Dec/2025 17:05:29] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:05:29] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:05:31] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:05:31] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:05:31] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:05:31] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:05:34] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:05:34] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+WARNING:root:ML prediction failed for flight US9186: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS4057: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AA1647: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ7227: 'delay_minutes'
+WARNING:root:ML prediction failed for flight VX1939: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS3650: 'delay_minutes'
+WARNING:root:ML prediction failed for flight UA9616: 'delay_minutes'
+WARNING:root:ML prediction failed for flight NK3927: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ4303: 'delay_minutes'
+WARNING:root:ML prediction failed for flight VX6963: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS8283: 'delay_minutes'
+WARNING:root:ML prediction failed for flight UA3634: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ1865: 'delay_minutes'
+127.0.0.1 - - [02/Dec/2025 17:05:35] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:05:35] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:05:56] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-03 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:05:56] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-03 HTTP/1.1" 200 -
+WARNING:root:ML prediction failed for flight US6676: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AA4030: 'delay_minutes'
+WARNING:root:ML prediction failed for flight VX8799: 'delay_minutes'
+WARNING:root:ML prediction failed for flight VX3633: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS5827: 'delay_minutes'
+WARNING:root:ML prediction failed for flight NK5338: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AA858: 'delay_minutes'
+WARNING:root:ML prediction failed for flight NK6866: 'delay_minutes'
+WARNING:root:ML prediction failed for flight UA3510: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ5754: 'delay_minutes'
+WARNING:root:ML prediction failed for flight UA2697: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS5823: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AS7043: 'delay_minutes'
+WARNING:root:ML prediction failed for flight VX8543: 'delay_minutes'
+WARNING:root:ML prediction failed for flight SQ2491: 'delay_minutes'
+WARNING:root:ML prediction failed for flight AA7295: 'delay_minutes'
+127.0.0.1 - - [02/Dec/2025 17:05:56] "GET /flights/status?from=LAX&to=ORD&date=2025-12-03 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:05:56] "GET /flights/status?from=LAX&to=ORD&date=2025-12-03 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:05:58] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-31 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:05:58] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:05:58] "GET /flights/status?from=LAX&to=ORD&date=2025-12-31 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:05:58] "GET /flights/status?from=LAX&to=ORD&date=2025-12-31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:06:05] "OPTIONS /flights/status?from=LAX&to=ORD&date=0001-12-22 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:06:05] "OPTIONS /flights/status?from=LAX&to=ORD&date=0001-12-22 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:06:05] "GET /flights/status?from=LAX&to=ORD&date=0001-12-22 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:06:05] "GET /flights/status?from=LAX&to=ORD&date=0001-12-22 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:06:16] "OPTIONS /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:06:16] "OPTIONS /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:06:16] "GET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 400 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:06:16] "[31m[1mGET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1[0m" 400 -
+127.0.0.1 - - [02/Dec/2025 17:06:17] "GET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 400 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:06:17] "[31m[1mGET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1[0m" 400 -
+127.0.0.1 - - [02/Dec/2025 17:06:19] "GET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 400 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:06:19] "[31m[1mGET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1[0m" 400 -
+127.0.0.1 - - [02/Dec/2025 17:06:23] "OPTIONS /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 200 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:06:23] "OPTIONS /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:06:23] "GET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 400 -
+INFO:werkzeug:127.0.0.1 - - [02/Dec/2025 17:06:23] "[31m[1mGET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1[0m" 400 -
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_flight_times.py', reloading
+INFO:werkzeug: * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_flight_times.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_flight_times.py', reloading
+INFO:werkzeug: * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_flight_times.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_flight_times.py', reloading
+INFO:werkzeug: * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_flight_times.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+127.0.0.1 - - [02/Dec/2025 17:06:35] "OPTIONS /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:06:35] "GET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 400 -
+127.0.0.1 - - [02/Dec/2025 17:06:37] "GET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 400 -
+127.0.0.1 - - [02/Dec/2025 17:06:39] "GET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 400 -
+127.0.0.1 - - [02/Dec/2025 17:07:49] "OPTIONS /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:07:50] "GET /flights/status?from=LAX&to=ORD&date=223343-12-22 HTTP/1.1" 400 -
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/ml_predictor.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/ml_predictor.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/ml_predictor.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/app.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/ml_predictor.py', reloading
+ * Detected change in '/Users/veda/Downloads/flight-delay-predictor/fix_airline_matching.py', reloading
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression
+ * Restarting with watchdog (fsevents)
+ * Debugger is active!
+ * Debugger PIN: 114-242-893
+127.0.0.1 - - [02/Dec/2025 17:20:21] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:21] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:23] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:23] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:29] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:30] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:30] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:33] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:33] "GET /flights/status?from=LAX&to=ORD&date=2025-09-21 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:36] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:36] "GET /flights/status?from=LAX&to=ORD&date=2025-12-02 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:40] "OPTIONS /flights/status?from=LAX&to=ORD&date=2025-12-03 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Dec/2025 17:20:40] "GET /flights/status?from=LAX&to=ORD&date=2025-12-03 HTTP/1.1" 200 -
+✅ Database connected successfully with 1555757 flights
+✅ Models loaded successfully. Using linear_regression as default model
+✅ ML models loaded successfully. Best model: linear_regression

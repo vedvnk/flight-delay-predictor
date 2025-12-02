@@ -308,14 +308,52 @@ class FlightDelayPredictor:
         
         # Convert to DataFrame for feature extraction
         df = pd.DataFrame([flight_data])
-        X, _ = self.prepare_training_data(df)
+        
+        # Extract features (this will create feature columns)
+        df_features = self.extract_features(df)
+        
+        # Use stored feature columns if available
+        if not hasattr(self, 'feature_columns') or not self.feature_columns:
+            # Fallback: define basic feature columns
+            self.feature_columns = [
+                'departure_hour', 'departure_minute', 'departure_day_of_week', 'departure_month',
+                'departure_is_weekend', 'departure_is_peak', 'departure_is_off_peak',
+                'scheduled_duration_minutes', 'aircraft_type_encoded', 'airline_encoded',
+                'origin_encoded', 'destination_encoded', 'route_frequency'
+            ]
+        
+        # Apply stored label encoders if available
+        if hasattr(self, 'label_encoders') and self.label_encoders:
+            if 'airline' in df.columns and 'airline' in self.label_encoders:
+                try:
+                    df_features['airline_encoded'] = self.label_encoders['airline'].transform(df['airline'].astype(str))
+                except:
+                    df_features['airline_encoded'] = 0
+            if 'aircraft_type' in df.columns and 'aircraft_type' in self.label_encoders:
+                try:
+                    df_features['aircraft_type_encoded'] = self.label_encoders['aircraft_type'].transform(df['aircraft_type'].astype(str))
+                except:
+                    df_features['aircraft_type_encoded'] = 0
+            if 'origin' in df.columns and 'origin' in self.label_encoders:
+                try:
+                    df_features['origin_encoded'] = self.label_encoders['origin'].transform(df['origin'].astype(str))
+                except:
+                    df_features['origin_encoded'] = 0
+            if 'destination' in df.columns and 'destination' in self.label_encoders:
+                try:
+                    df_features['destination_encoded'] = self.label_encoders['destination'].transform(df['destination'].astype(str))
+                except:
+                    df_features['destination_encoded'] = 0
         
         # Ensure all required features are present
+        X = pd.DataFrame()
         for col in self.feature_columns:
-            if col not in X.columns:
+            if col in df_features.columns:
+                X[col] = df_features[col]
+            else:
                 X[col] = 0
         
-        X = X[self.feature_columns].fillna(0)
+        X = X.fillna(0)
         
         # Scale features
         if 'standard' in self.scalers:

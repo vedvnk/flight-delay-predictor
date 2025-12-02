@@ -338,6 +338,13 @@ def get_flight_status():
                 airport_congestion = round(random.uniform(0.3, 0.98), 2)
                 # TODO: Use real weather/NAS/congestion API here instead of random values
                 # Prepare ML feature dict for per-flight prediction
+                # Calculate duration if not set
+                duration_mins = flight.duration_minutes
+                if not duration_mins and flight.scheduled_departure and flight.scheduled_arrival:
+                    duration_mins = int((flight.scheduled_arrival - flight.scheduled_departure).total_seconds() / 60)
+                if not duration_mins:
+                    duration_mins = 180  # Default 3 hours
+                
                 flight_data = {
                     'flight_number': flight.flight_number,
                     'airline': flight.airline.name if flight.airline else 'Unknown',
@@ -351,22 +358,93 @@ def get_flight_status():
                     'gate': flight.gate,
                     'terminal': flight.terminal,
                     'status': flight.status,
-                    'seats_available': flight.seats_available,
-                    'total_seats': flight.total_seats,
-                    'route_frequency': flight.route_frequency,
-                    # Simulated and historic features
+                    'seats_available': flight.seats_available or 0,
+                    'total_seats': flight.total_seats or 180,
+                    'route_frequency': flight.route_frequency or 0,
+                    'duration_minutes': duration_mins,
+                    'distance_miles': flight.distance_miles or 1000,
+                    'delay_minutes': flight.delay_minutes or 0,  # Required by ML predictor
+                    'on_time_probability': flight.on_time_probability or 0.7,
+                    # Simulated and historic features - make these more varied per flight
                     'weather_condition': flight_weather,
                     'current_nas_congestion': flight_nas_congestion,
-                    'current_airport_congestion': airport_congestion
+                    'current_airport_congestion': airport_congestion,
+                    # Add time-based features for better variation
+                    'flight_date': flight.flight_date,
                 }
                 try:
                     ml_prediction = ml_predictor.predict_delay(flight_data)
-                    delay_minutes_pred = ml_prediction['predicted_delay_minutes']
-                    delay_probability = min(max(delay_minutes_pred/60, 0), 1)  # Assume 60+ mins ~ 1.0 risk
-                    delay_risk = ml_prediction['prediction_quality'].replace('_RISK', '')
+                    delay_minutes_pred = max(0, ml_prediction['predicted_delay_minutes'])
+                    prediction_quality = ml_prediction.get('prediction_quality', 'LOW_RISK')
                 except Exception as e:
-                    delay_probability = 0.2
-                    delay_minutes_pred = 5
+                    # Fallback: Calculate delay based on flight characteristics
+                    import logging
+                    logging.warning(f"ML prediction failed for flight {flight.flight_number}: {str(e)}")
+                    
+                    # Calculate delay based on multiple factors for variation
+                    base_delay = 5
+                    
+                    # Airline-specific base delays (if airline known)
+                    if flight.airline:
+                        airline_name = flight.airline.name
+                        airline_delays = {
+                            'Spirit Airlines': 25, 'Frontier Airlines': 22, 'JetBlue Airways': 18,
+                            'American Airlines': 15, 'United Airlines': 16, 'Southwest Airlines': 14,
+                            'Delta Air Lines': 12, 'Alaska Airlines': 10
+                        }
+                        base_delay += airline_delays.get(airline_name, 12)
+                    
+                    # Time of day factor
+                    if flight.scheduled_departure:
+                        hour = flight.scheduled_departure.hour
+                        if hour in [7, 8, 17, 18, 19]:  # Peak hours
+                            base_delay += 15
+                        elif hour in [22, 23, 0, 1, 2, 3, 4, 5]:  # Off-peak
+                            base_delay += 3
+                    
+                    # Weather factor
+                    weather_delays = {'clear': 0, 'cloudy': 5, 'rain': 15, 'storm': 30, 'fog': 20}
+                    base_delay += weather_delays.get(flight_weather, 5)
+                    
+                    # NAS congestion factor
+                    base_delay += int(flight_nas_congestion * 20)
+                    
+                    # Airport congestion factor
+                    base_delay += int(airport_congestion * 15)
+                    
+                    # Add some randomness for variation
+                    import random
+                    base_delay += random.randint(-5, 10)
+                    
+                    delay_minutes_pred = max(0, base_delay)
+                    
+                    # Determine risk category
+                    if delay_minutes_pred >= 60:
+                        prediction_quality = 'HIGH_RISK'
+                    elif delay_minutes_pred >= 30:
+                        prediction_quality = 'MEDIUM_RISK'
+                    else:
+                        prediction_quality = 'LOW_RISK'
+                
+                # Calculate delay probability based on predicted delay minutes
+                # Probability that delay will be >= 15 minutes (meaningful delay)
+                if delay_minutes_pred >= 60:
+                    delay_probability = 0.85  # 85% chance of significant delay
+                elif delay_minutes_pred >= 30:
+                    delay_probability = 0.65  # 65% chance
+                elif delay_minutes_pred >= 15:
+                    delay_probability = 0.45  # 45% chance
+                elif delay_minutes_pred >= 5:
+                    delay_probability = 0.25  # 25% chance
+                else:
+                    delay_probability = 0.10  # 10% chance (low but not zero)
+                
+                # Map prediction quality to delay risk
+                if 'HIGH' in prediction_quality:
+                    delay_risk = 'HIGH'
+                elif 'MEDIUM' in prediction_quality:
+                    delay_risk = 'MEDIUM'
+                else:
                     delay_risk = 'LOW'
                 # Convert to API format as before, but using the new prediction fields:
                 flights.append({
@@ -585,7 +663,13 @@ def predict_monthly_delay():
                 delay_risk_category = "LOW" if delay_probability < 15 else ("MEDIUM" if delay_probability < 30 else "HIGH")
                 delay_risk_color = "green" if delay_probability < 15 else ("yellow" if delay_probability < 30 else "red")
                 
-                avg_delay_minutes = (actual_data.total_delay_minutes or 0) / (actual_data.total_arrivals or 1)
+                # Calculate average delay duration FOR DELAYED FLIGHTS ONLY
+                # "If there is a delay, how long would that delay be"
+                if actual_data.arrivals_delayed_15_min and actual_data.arrivals_delayed_15_min > 0:
+                    avg_delay_minutes = (actual_data.total_delay_minutes or 0) / actual_data.arrivals_delayed_15_min
+                else:
+                    # Fallback if no delayed flights data
+                    avg_delay_minutes = (actual_data.total_delay_minutes or 0) / max(actual_data.total_arrivals or 1, 1)
                 delay_duration_category = "LOW" if avg_delay_minutes < 30 else ("MEDIUM" if avg_delay_minutes < 60 else "HIGH")
                 
                 return jsonify({
@@ -628,12 +712,26 @@ def predict_monthly_delay():
                 })
             
             # Get historical performance data for prediction
-            historical_data = AirlineMonthlyPerformance.query.filter(
-                AirlineMonthlyPerformance.airline_id == airline.id
+            # Priority 1: Same month from previous years (seasonal patterns)
+            same_month_data = AirlineMonthlyPerformance.query.filter(
+                AirlineMonthlyPerformance.airline_id == airline.id,
+                AirlineMonthlyPerformance.month == month,
+                AirlineMonthlyPerformance.year < year  # Only past years
+            ).order_by(
+                AirlineMonthlyPerformance.year.desc()
+            ).limit(5).all()
+            
+            # Priority 2: Recent months from same airline (if same month data limited)
+            recent_data = AirlineMonthlyPerformance.query.filter(
+                AirlineMonthlyPerformance.airline_id == airline.id,
+                AirlineMonthlyPerformance.year < year
             ).order_by(
                 AirlineMonthlyPerformance.year.desc(),
                 AirlineMonthlyPerformance.month.desc()
             ).limit(12).all()
+            
+            # Use same-month data if available, otherwise use recent data
+            historical_data = same_month_data if same_month_data else recent_data
             
             if not historical_data:
                 return jsonify({'error': f'No historical data found for airline: {airline_code}'}), 404
@@ -641,13 +739,29 @@ def predict_monthly_delay():
             # Get most recent data as baseline
             latest = historical_data[0]
             
-            # Calculate predictions based on historical trends
-            # Simple approach: use recent average
-            avg_delay_rate = sum(1 - (perf.on_time_percentage or 0) / 100 for perf in historical_data) / len(historical_data)
-            avg_delay_minutes = sum((perf.total_delay_minutes or 0) / (perf.total_arrivals or 1) for perf in historical_data) / len(historical_data)
+            # Calculate predictions based on actual FAA/Cirium data: delayed flights / total flights
+            # Use airline and month-specific historical patterns
+            total_delayed = sum((perf.arrivals_delayed_15_min or 0) for perf in historical_data)
+            total_arrivals = sum((perf.total_arrivals or 1) for perf in historical_data)
             
-            # Predict delay probability
-            delay_probability = avg_delay_rate * 100
+            if total_arrivals > 0:
+                # Use actual delayed flights ratio from FAA/Cirium data
+                delay_probability = (total_delayed / total_arrivals) * 100
+            else:
+                # Fallback: calculate from on-time percentage
+                avg_on_time = sum((perf.on_time_percentage or 0) for perf in historical_data) / len(historical_data)
+                delay_probability = 100 - avg_on_time
+            
+            # Calculate average delay minutes per delayed flight from FAA/Cirium data
+            # "If there is a delay, how long would that delay be" - only for delayed flights
+            total_delay_minutes_all = sum((perf.total_delay_minutes or 0) for perf in historical_data)
+            if total_delayed > 0:
+                # Average delay duration FOR DELAYED FLIGHTS ONLY
+                # Total delay minutes / Number of flights that were delayed (>=15 min)
+                avg_delay_minutes = total_delay_minutes_all / total_delayed
+            else:
+                # Fallback: average delay per total flight (shouldn't happen with real data)
+                avg_delay_minutes = sum((perf.total_delay_minutes or 0) / max(perf.total_arrivals or 1, 1) for perf in historical_data) / len(historical_data)
             
             # Categorize delay risk
             if delay_probability < 15:

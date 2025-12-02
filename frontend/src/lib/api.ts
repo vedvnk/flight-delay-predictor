@@ -15,6 +15,10 @@ export const flightStatusSchema = z.object({
   delayMinutes: z.number().nullable(),
   seatsAvailable: z.number().optional(),
   onTimeProbability: z.number().min(0).max(1).optional(),
+  // Delay prediction fields
+  delayProbability: z.number().min(0).max(1).optional(),
+  predictedDelayMinutes: z.number().optional(),
+  delayRisk: z.string().optional(),
 });
 
 export const alternativeFlightSchema = z.object({

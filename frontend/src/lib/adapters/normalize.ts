@@ -12,6 +12,10 @@ export interface NormalizedFlight {
   gate: string | null;
   status: 'ON_TIME' | 'DELAYED' | 'CANCELED';
   delayMinutes: number | null;
+  // Delay prediction fields
+  delayProbability?: number;
+  predictedDelayMinutes?: number;
+  delayRisk?: string;
   // Derived fields
   isDelayed: boolean;
   delayText: string;
@@ -83,6 +87,10 @@ export function normalizeFlight(flight: FlightStatus): NormalizedFlight {
     gate: flight.gate,
     status: flight.status,
     delayMinutes,
+    // Extract prediction fields from API response
+    delayProbability: (flight as any).delayProbability,
+    predictedDelayMinutes: (flight as any).predictedDelayMinutes,
+    delayRisk: (flight as any).delayRisk,
     isDelayed,
     delayText: getDelayText(delayMinutes),
     departureTimeText: format(scheduledDeparture, 'HH:mm'),

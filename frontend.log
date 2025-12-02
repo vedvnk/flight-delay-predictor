@@ -1,0 +1,48 @@
+
+> ontime@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.0.3
+   - Local:        http://localhost:3000
+
+ ✓ Starting...
+ ✓ Ready in 1216ms
+ ○ Compiling / ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ✓ Compiled / in 3.1s (1660 modules)
+ GET / 200 in 3547ms
+ ✓ Compiled in 453ms (815 modules)
+ GET / 200 in 104ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 1554ms (860 modules)
+ GET /favicon.ico 200 in 1708ms
+ ✓ Compiled /monthly in 492ms (1676 modules)
+ GET /monthly 200 in 559ms
+ ✓ Compiled in 619ms (1675 modules)
+ GET /monthly 200 in 98ms
+ GET / 200 in 376ms
+ GET / 200 in 662ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 517ms (869 modules)
+ GET /favicon.ico 200 in 642ms
+ GET /monthly 200 in 92ms
+ ✓ Compiled in 501ms (1690 modules)
+ GET /monthly 200 in 56ms
+ ✓ Compiled in 781ms (1661 modules)
+ ✓ Compiled in 558ms (1661 modules)
+ ✓ Compiled in 272ms (1661 modules)
+ GET / 200 in 172ms
+ ✓ Compiled in 1152ms (1675 modules)
+ GET / 200 in 115ms
+ GET / 200 in 272ms
+ ✓ Compiled /favicon.ico in 152ms (869 modules)
+ GET /favicon.ico 200 in 227ms
+ GET / 200 in 1023ms
+ GET / 200 in 104ms
+ GET /favicon.ico 200 in 14ms
+[?25h
+npm notice
+npm notice New patch version of npm available! 11.6.0 -> 11.6.4
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.4
+npm notice To update run: npm install -g npm@11.6.4
+npm notice
